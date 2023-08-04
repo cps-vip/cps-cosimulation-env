@@ -31,7 +31,10 @@
           buildInputs = with pkgs; [
             # C/C++ build utils
             gnumake
-            cmake
+            (cmake.override {
+              uiToolkits = [ "ncurses" ];
+            })
+            extra-cmake-modules
 
             boost
             czmq
