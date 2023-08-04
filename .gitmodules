@@ -1,0 +1,9 @@
+[submodule "HELICS"]
+	path = HELICS
+	url = https://github.com/cps-vip/HELICS.git
+[submodule "HELICS-Examples"]
+	path = HELICS-Examples
+	url = https://github.com/cps-vip/HELICS-Examples.git
+[submodule "gridlab-d"]
+	path = gridlab-d
+	url = https://github.com/cps-vip/gridlab-d.git
