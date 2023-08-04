@@ -18,7 +18,7 @@
           inherit system; 
         };
 
-        packageName = "vip-helics";
+        packageName = "vip-cosim";
 
       in {
         devShell = pkgs.mkShell {
