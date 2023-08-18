@@ -35,4 +35,3 @@ endef
 
 $(eval $(call create-cmake-targets,helics,HELICS,-DCMAKE_INSTALL_PREFIX=$(REPO_ROOT)/install/HELICS -DHELICS_BUILD_CXX_SHARED_LIB=ON -DHELICS_BUILD_EXAMPLES=ON -DHELICS_BUILD_TESTS=ON))
 
-$(eval $(call create-cmake-targets,helics-examples,HELICS-Examples,-DCMAKE_INSTALL_PREFIX=$(REPO_ROOT)/install/HELICS-Examples -DHELICS_DIR=$(REPO_ROOT)/install/HELICS/lib/cmake/HELICS))
