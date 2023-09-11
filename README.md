@@ -41,7 +41,7 @@ The following list of steps details a clean install of the required dependencies
 
     make
     make install
-    cd ../ # This takes us back to the cps-cosimulation-env directory
+    cd ../../ # This takes us back to the cps-cosimulation-env directory
     ```
 6. Build Gridlab-D
     - Now we'll follow a very similar process for gridlab-d
