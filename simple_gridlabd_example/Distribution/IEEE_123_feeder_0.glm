@@ -6822,6 +6822,15 @@ object recorder {
 };
 
 object recorder {
+    parent n150;
+    file ../results/IEEE_123_feeder_0_meter_current.csv;
+    interval 60;
+    in "2013-08-28 00:00:00";
+    out "2013-08-29 00:00:00";
+    property measured_current_A,measured_current_B,measured_current_C;
+};
+
+object recorder {
     parent ClimateWeather;
     file ../results/IEEE_123_feeder_0_climate.csv;
     interval 60;

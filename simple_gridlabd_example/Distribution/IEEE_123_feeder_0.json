@@ -18,7 +18,38 @@
                     "object" : "network_node",
                     "property" : "distribution_load"
                }
+          },
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/currentA",
+               "type" : "complex",
+               "unit" : "A",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_current_A"
+               }
+          },
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/currentB",
+               "type" : "complex",
+               "unit" : "A",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_current_B"
+               }
+          },
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/currentC",
+               "type" : "complex",
+               "unit" : "A",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_current_C"
+               }
           }
+
     ],
     "subscriptions" : [
           {

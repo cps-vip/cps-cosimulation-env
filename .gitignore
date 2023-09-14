@@ -1,0 +1,4 @@
+install/
+HELICS/build
+**/CMakeFiles/
+**/CMakeCache.txt
