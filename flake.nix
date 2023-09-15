@@ -21,11 +21,10 @@
         packageName = "vip-cosim";
 
       in {
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
 
           shellHook = ''
-            export PATH=$(realpath ./install/bin):$PATH
-            export REPO_ROOT=$(realpath ./.)
+            source $(realpath ./.)/nix-shell-setup.bash
           '';
 
           buildInputs = with pkgs; [
@@ -39,6 +38,9 @@
             boost
             czmq
             ncurses
+
+            poetry
+            python310
           ];
         };
       }

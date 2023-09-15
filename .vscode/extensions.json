@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "bbenoist.nix",
+        "ms-vscode-remote.remote-wsl",
+        "ms-vscode.cpptools",
+        "twxs.cmake",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-vscode.makefile-tools"
+    ]
+}
