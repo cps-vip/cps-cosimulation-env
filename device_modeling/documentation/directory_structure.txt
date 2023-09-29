@@ -1,4 +1,4 @@
-# Project documentation
+Directory Structure
 
 device_modeling/
 │
