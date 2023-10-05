@@ -2,6 +2,7 @@
 
 export PATH=$(realpath ./install/HELICS/bin):$PATH
 export PATH=$(realpath ./install/gridlab/bin):$PATH
+export PATH=$(realpath ./install/bin):$PATH
 export REPO_ROOT=$(realpath ./.)
 
 export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
