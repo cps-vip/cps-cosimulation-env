@@ -1,5 +1,5 @@
-from src.process_level.process_device import ProcessDevice
+from device_base.device import Device
 
-class RelayHouse(ProcessDevice):
+class ProcessDevice(Device):
     def __init__(self, name: str, communication_protocol: str):
         super().__init__(name, communication_protocol)

@@ -1,46 +1,55 @@
-Directory Structure
-
 device_modeling/
 │
 ├── documentation/
-│   ├── requirements.txt                  # List of project dependencies
-│   └── README.md                         # Project documentation
+│   ├── requirements.txt                       # Project dependencies list
+│   └── README.md                              # Project documentation
 │
 ├── simulations/
-│   ├── helics-config.json                # Configuration file for HELICS co-simulation
-│   ├── gridlab-d-config.glm              # Configuration file for GridLAB-D co-simulation
-│   ├── run_simulation.py                 # Python script to execute the co-simulation
-│   └── results/                          # Directory to store simulation results
+│   ├── helics-config.json                     # Configuration file for HELICS co-simulation
+│   ├── gridlab-d-config.glm                   # Configuration file for GridLAB-D co-simulation
+│   ├── run_simulation.py                      # Python script to execute the co-simulation
+│   └── results/                               # Directory to store simulation results
 │
 ├── src/
-│   ├── process_level/                    # Layer 1: Process Level components
-│   │   ├── relay_house.py                # For the Relay House
-│   │   ├── protection_relays.py          # For Protection Relays
-│   │   ├── voltage_current_sensors.py    # For Voltage and Current Sensors
-│   │   ├── communication_interfaces.py   # For Communication Interfaces
-│   │   │── sensors/                      # Directory for Sensors (CTs and VTs)
-│   │   │   ├── current_transformers.py   # For Current Transformers (CTs)
-│   │   │   └── voltage_transformers.py   # For Voltage Transformers (VTs)
+│   ├── device_base/
+│   │   ├── device.py                          # Base class for devices
 │   │   └── ...
-│   ├── bay_level/                        # Layer 2: Bay Level components
-│   │   ├── bay_controllers.py            # For Bay Controllers
-│   │   ├── switchgear.py                 # For Switchgear components
-│   │   ├── circuit_breakers.py           # For Circuit Breakers
+│   ├── process_level/                         # Layer 1: Process Level components
+│   │   ├── process_device.py                  # Base class for process-level devices
+│   │   ├── relay_house.py                     # Implementation for the Relay House
+│   │   ├── protection_relays.py               # Implementation for Protection Relays
+│   │   ├── communication_interfaces.py        # Implementation for Communication Interfaces
+│   │   ├── sensors/                           # Directory for Sensors (CTs and VTs)
+│   │   │   ├── sensor_device.py               # Base class for sensors
+│   │   │   ├── current_transformer_sensor.py  # Implementation for Current Transformers (CTs)
+│   │   │   └── voltage_transformer_sensor.py  # Implementation for Voltage Transformers (VTs)
+│   │   ├── transformers/                      # Directory for Transformers
+│   │   │   ├── transformer_device.py          # Base class for transformers
+│   │   │   ├── distribution_transformer.py    # Implementation for Distribution Transformers
+│   │   │   └── power_transformer.py           # Implementation for Power Transformers
 │   │   └── ...
-│   ├── station_level/                    # Layer 3: Station Level components
-│   │   ├── station_gateway.py            # For the Station Gateway
-│   │   ├── human_machine_interface.py    # For Human-Machine Interface (HMI)
+│   ├── bay_level/                             # Layer 2: Bay Level components
+│   │   ├── bay_device.py                      # Base class for bay-level devices
+│   │   ├── bay_controllers.py                 # Implementation for Bay Controllers
+│   │   ├── switchgear.py                      # Implementation for Switchgear components
+│   │   ├── circuit_breakers.py                # Implementation for Circuit Breakers
 │   │   └── ...
-│   ├── common/                           # Common components shared across layers
-│   │   ├── modbus_interface.py           # For Modbus communication
-│   │   ├── dnp3_interface.py             # For DNP3 communication
-│   │   ├── iec61850_interface.py         # For IEC 61850 communication
+│   ├── station_level/                         # Layer 3: Station Level components
+│   │   ├── station_device.py                  # Base class for station-level devices
+│   │   ├── station_gateway.py                 # Implementation for the Station Gateway
+│   │   ├── human_machine_interface.py         # Implementation for Human-Machine Interface (HMI)
 │   │   └── ...
-│   └── main.py                           # Main Python script to orchestrate the simulation
+│   ├── common/                                # Common components shared across layers
+│   │   ├── modbus_interface.py                # Implementation for Modbus communication
+│   │   ├── dnp3_interface.py                  # Implementation for DNP3 communication
+│   │   ├── iec61850_interface.py              # Implementation for IEC 61850 communication
+│   │   └── ...
+│   └── main.py                                # Main Python script to orchestrate the simulation
 │
 ├── tests/
-│   ├── unit_tests/                       # Directory for unit tests
-│   ├── integration_tests/                # Directory for integration tests
-│   └── formal_verification/              # Directory for formal verification tests
+│   ├── unit_tests/                            # Directory for unit tests
+│   ├── integration_tests/                     # Directory for integration tests
+│   └── formal_verification/                   # Directory for formal verification tests
 │
-└── data/                                 # Directory for storing data or configuration files
+└── data/                                      # Directory for storing data or configuration files
+    └── test.csv                               # Sample data file
