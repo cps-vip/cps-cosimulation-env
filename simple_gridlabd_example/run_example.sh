@@ -11,7 +11,8 @@ touch $BROKER_LOG
 touch $TRANSMISSION_LOG
 touch $DISTRIBUTION_LOG
 
-($REPO_ROOT/install/HELICS/bin/helics_broker -t="zmq" --federates=3 --name=mainbroker > $BROKER_LOG)&
+HELICS_BROKER=`which helics_broker`
+($HELICS_BROKER -t="zmq" --federates=3 --name=mainbroker > $BROKER_LOG)&
 
 cd Transmission
 python Transmission_simulator.py > ../$TRANSMISSION_LOG 2>&1 &
