@@ -16,6 +16,7 @@ device_modeling/
 │   │   └── ...
 │   ├── process_level/                         # Layer 1: Process Level components
 │   │   ├── process_device.py                  # Base class for process-level devices
+│   │   ├── circuit_breakers.py                # Implementation for Circuit Breakers
 │   │   ├── relay_house.py                     # Implementation for the Relay House
 │   │   ├── protection_relays.py               # Implementation for Protection Relays
 │   │   ├── communication_interfaces.py        # Implementation for Communication Interfaces
@@ -32,7 +33,6 @@ device_modeling/
 │   │   ├── bay_device.py                      # Base class for bay-level devices
 │   │   ├── bay_controllers.py                 # Implementation for Bay Controllers
 │   │   ├── switchgear.py                      # Implementation for Switchgear components
-│   │   ├── circuit_breakers.py                # Implementation for Circuit Breakers
 │   │   └── ...
 │   ├── station_level/                         # Layer 3: Station Level components
 │   │   ├── station_device.py                  # Base class for station-level devices
@@ -48,6 +48,8 @@ device_modeling/
 │
 ├── tests/
 │   ├── unit_tests/                            # Directory for unit tests
+│   │   ├── circuitbreaker_unit_test.py        # Unit test file for Circuit Breakers
+│   │   └── ...
 │   ├── integration_tests/                     # Directory for integration tests
 │   └── formal_verification/                   # Directory for formal verification tests
 │
