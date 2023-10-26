@@ -7,12 +7,12 @@ class CircuitBreaker(ProcessDevice):
     communication protocol, and maximum current rating. It also sets the initial state of the circuit breaker, 
     indicating that it is closed, its position, and trip command.
     """
-    def __init__(self, name: str, communication_protocol: str, max_current_rating: float):
-        super().__init__(name, communication_protocol)
-        self.max_current_rating = max_current_rating
+    def __init__(self, name: str, protocol: str, max_current: float):
+        super().__init__(name, protocol)
+        self.max_current = max_current
         self.is_closed = True  # Circuit breaker is initially closed
-        self.position = 0  # 0 for open, 1 for closed
-        self.trip_command = False
+        self.position  = 0     # 0 for open, 1 for closed
+        self.trip_cmd  = False
 
 
     """
@@ -54,14 +54,14 @@ class CircuitBreaker(ProcessDevice):
     """
     This method returns the maximum current rating of the circuit breaker.
     """
-    def get_max_current_rating(self) -> float:
-        return self.max_current_rating
+    def get_max_current(self) -> float:
+        return self.max_current
 
 
     """
     This method returns a boolean value indicating whether the circuit breaker is currently closed or not.
     """
-    def is_circuit_closed(self) -> bool:
+    def is_closed_status(self) -> bool:
         return self.is_closed
 
 
@@ -71,8 +71,8 @@ class CircuitBreaker(ProcessDevice):
     """
     def trip(self):
         try:
-            if not self.trip_command:
-                self.trip_command = True
+            if not self.trip_cmd:
+                self.trip_cmd = True
                 print(f"Trip command issued for {self.name} circuit breaker.")
             else:
                 print(f"Trip command has already been issued for {self.name} circuit breaker.")
@@ -85,7 +85,7 @@ class CircuitBreaker(ProcessDevice):
     """
     This method returns a logical node name associated with the circuit breaker, typically used in communication protocols within substations.
     """
-    def get_logical_node_name(self) -> str:
+    def get_node_name(self) -> str:
         return f"CBR:{self.name}"
 
     """
@@ -95,7 +95,7 @@ class CircuitBreaker(ProcessDevice):
     def get_status_data(self) -> dict:
         try:
             return {
-                "Oper": "false" if self.is_closed else "true",
+                "Oper": self.is_closed,
                 "Pos": str(self.position)
             }
         except Exception as e:
