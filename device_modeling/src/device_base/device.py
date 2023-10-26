@@ -1,7 +1,7 @@
 class Device:
-    def __init__(self, name: str, communication_protocol: str):
+    def __init__(self, name: str, protocol: str):
         self.name = name
-        self.communication_protocol = communication_protocol
+        self.protocol = protocol
         self.status = "Inactive"  # Default status
 
     def activate(self):
@@ -17,4 +17,4 @@ class Device:
         return self.name
 
     def get_communication_protocol(self) -> str:
-        return self.communication_protocol
+        return self.protocol
