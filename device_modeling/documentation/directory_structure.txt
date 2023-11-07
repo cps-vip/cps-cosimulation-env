@@ -19,7 +19,6 @@ device_modeling/
 │   │   ├── circuit_breakers.py                # Implementation for Circuit Breakers
 │   │   ├── relay_house.py                     # Implementation for the Relay House
 │   │   ├── protection_relays.py               # Implementation for Protection Relays
-│   │   ├── communication_interfaces.py        # Implementation for Communication Interfaces
 │   │   ├── sensors/                           # Directory for Sensors (CTs and VTs)
 │   │   │   ├── sensor_device.py               # Base class for sensors
 │   │   │   ├── current_transformer_sensor.py  # Implementation for Current Transformers (CTs)
@@ -49,9 +48,11 @@ device_modeling/
 ├── tests/
 │   ├── unit_tests/                            # Directory for unit tests
 │   │   ├── circuitbreaker_unit_test.py        # Unit test file for Circuit Breakers
+│   │   ├── baycontroller_unit_test.py         # Unit test file for Bay Controller
 │   │   └── ...
 │   ├── integration_tests/                     # Directory for integration tests
 │   └── formal_verification/                   # Directory for formal verification tests
 │
 └── data/                                      # Directory for storing data or configuration files
-    └── test.csv                               # Sample data file
+    ├── test.csv                               # Sample data file
+    └── ...
