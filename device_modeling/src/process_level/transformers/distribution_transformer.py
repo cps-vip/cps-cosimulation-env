@@ -1,4 +1,4 @@
-from src.process_level.transformers import Transformer
+from transformer_device import Transformer
 
 class DistributionTransformer(Transformer):
     def __init__(self, name: str, communication_protocol: str, capacity: float):
