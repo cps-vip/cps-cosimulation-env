@@ -1,4 +1,5 @@
-from src.process_level.process_device import ProcessDevice
+from process_level.process_device import ProcessDevice
+
 
 class CircuitBreaker(ProcessDevice):
 
@@ -31,8 +32,8 @@ class CircuitBreaker(ProcessDevice):
         try:
             if not self.is_closed:
                 self.is_closed = True
-                self.position = 1
-                self.trip_cmd = False
+                self.position  = 1
+                self.trip_cmd  = False
                 print(f"{self.name} circuit breaker is now closed.")
             else:
                 print(f"{self.name} circuit breaker is already closed.")
@@ -97,7 +98,6 @@ class CircuitBreaker(ProcessDevice):
 
 
     # IEC 61850 specific methods and attributes:
-
     def get_node_name(self) -> str:
         """
         Method to get a logical node name associated with the circuit breaker.
