@@ -84,7 +84,7 @@ class BayController:
                 # Check the voltage of each active device
                 if device.get_communication_protocol() == "IEC61850":
                     # Assuming IEC61850 protocol for voltage regulation
-                    current_voltage = self.measure_voltage(device)
+                    current_voltage = self.simulate_voltage(device)
                     self.voltage_history.append(current_voltage)  # Log voltage
                     voltage_difference = current_voltage - self.target_voltage
 
@@ -112,7 +112,7 @@ class BayController:
                     print(f"{device.get_device_name()} does not use IEC61850 protocol.")
 
 
-    def measure_voltage(self, device: BayDevice) -> float:
+    def simulate_voltage(self, device: BayDevice) -> float:
         """
         Method to simulate measuring the voltage of a device.
 

@@ -19,7 +19,7 @@ bay_controller.set_target_voltage(600.0)
 
 # Specify the time range for data collection
 start_time = 0
-end_time   = 30
+end_time   = 300
 
 # Simulate the bay's operation and voltage regulation
 print(f"Bay Status: {bay_controller.get_bay_status()}")

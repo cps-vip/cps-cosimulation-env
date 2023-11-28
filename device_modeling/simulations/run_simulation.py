@@ -1,6 +1,11 @@
 import helics as h
 import time
 import logging
+from bay_level.bay_controllers import BayController
+from process_level.circuit_breakers import CircuitBreaker
+from process_level.protection_relays import ProtectionRelay
+
+from process_level.transformers.transformer_device import Transformer
 
 
 # Create a logger instance
@@ -120,11 +125,13 @@ def voltage_monitoring_and_control(bay_controller, transformer, endpoint_main_tr
 
 def adjust_main_transformer_tap_settings(transformer, endpoint_main_transformer):
     # Implement Modbus communication to adjust tap settings
+    # Example: h.helicsEndpointSendBytesTo(endpoint_main_transformer, "ModbusCommand", command_data)
     pass
 
 
 def substation_response(transformer, endpoint_main_transformer):
     # Implement gradual return to normal voltage using Modbus commands
+    # Example: h.helicsEndpointSendBytesTo(endpoint_main_transformer, "ModbusCommand", command_data)
     pass
 
 
