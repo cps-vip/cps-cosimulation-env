@@ -19,8 +19,18 @@ class Transformer:
         return self.primary_voltage
 
 
-    def set_secondary_voltage(self, voltage: float) -> None:
-        self.secondary_voltage = voltage
+    def set_secondary_voltage(self) -> None:
+        if self.primary_voltage == 0.0:
+            raise ValueError("Primary voltage is not set.")
+
+        if not self.taps:
+            raise ValueError("Turn ratio is not set.")
+
+        # Calculate the secondary voltage using primary voltage and current turn ratio
+        secondary_voltage = self.primary_voltage * self.get_turns_ratio()
+
+        # Set the calculated secondary voltage
+        self.secondary_voltage = secondary_voltage
 
 
     def get_secondary_voltage(self) -> float:
@@ -38,13 +48,20 @@ class Transformer:
         return self.tap_position
 
 
-    def set_taps(self, num_taps: int) -> None:
-        self.taps = list(range(num_taps))
+    def set_taps(self, turn_ratios: List[float]) -> None:
+
+        # Validate if the provided list contains valid turn ratios less than 1
+        for ratio in turn_ratios:
+            if not 0 <= ratio <= 1:
+                raise ValueError("Turn ratios should be greater than or equal than 0 and less than or equal than 1.")
+
+        # Assign the provided list of turn ratios to self.taps
+        self.taps = turn_ratios
 
 
     def get_taps(self) -> List[int]:
-        return self.taps
-
+        return [tap for tap in self.taps if tap != self.taps[self.tap_position]]
+    
     def set_state(self, primary_voltage: float, secondary_voltage: float, tap: int, num_taps: int) -> None:
         self.set_primary_voltage(primary_voltage)
         self.set_secondary_voltage(secondary_voltage)
