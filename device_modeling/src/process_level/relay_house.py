@@ -25,7 +25,7 @@ class RelayHouse(ProcessDevice):
         """
         Monitor the status of the relay house and equipment.
         """
-        
+        pass
 
     def enforce_access_security(self, lock=True):
         """
