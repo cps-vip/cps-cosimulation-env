@@ -6,8 +6,8 @@ transformer = Transformer(name="Transformer1", communication_protocol="IEC61850"
 
 # Set transformer parameters
 transformer.set_primary_voltage(10000.0)  # Set primary voltage to 10 kV
-transformer.set_taps([0, 1, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50])  # Set secondary voltage to 400 V
-transformer.set_tap(5)  # Assuming 11 taps available
+transformer.set_taps([0, 1, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50])  
+transformer.set_tap(5)  # Set Secondary Voltage
 transformer.set_secondary_voltage()
 
 # Display transformer details
