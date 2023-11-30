@@ -13,7 +13,7 @@
     },
     
 
-    # ---------------------------PROCESS_LEVEL_FEDERATES------------------------------------------------------------------------------
+    ########################################################  PROCESS_LEVEL_FEDERATES #######################################################
     {
       "directory": "device_modeling/src/process_level",
       "exec": "python -u process_device.py",
@@ -41,7 +41,7 @@
       "name": "RelayHouse"
     },
 
-  #                  SENSOR_DEVICE_FEDERATES
+  ########################################################  SENSOR_DEVICE_FEDERATES #######################################################
     {
       "directory": "device_modeling/src/process_level/sensors",
       "exec": "python -u sensor_device.py",
@@ -99,7 +99,7 @@
       "name": "DistributionTransformer"
     },
 
-    #-----------------------------BAY_LEVEL_FEDERATES-------------------------------------------------------------------------------
+    ######################################################## BAY_LEVEL_FEDERATES #######################################################
 
       
     {
