@@ -1,0 +1,84 @@
+{
+  "name": "Cosim_HELICS_runner",
+  "broker": true,
+  "federates": [
+    {
+      "directory": ".",
+      "exec": "python -u circuit_breakers.py",
+      "host": "localhost",
+      "name": "CircuitBreaker"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u process_device.py",
+      "host": "localhost",
+      "name": "ProcessDevice"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u protection_relays.py",
+      "host": "localhost",
+      "name": "ProtectionRelay"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u relay_house.py",
+      "host": "localhost",
+      "name": "RelayHouse"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u voltage_current_sensors.py",
+      "host": "localhost",
+      "name": "VoltageCurrentSensor"
+    },
+    {
+      "directory": "./device_modeling/src/process_level/sensors",
+      "exec": "python -u sensor_device.py",
+      "host": "localhost",
+      "name": "SensorDevice"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u current_transformer_sensor.py",
+      "host": "localhost",
+      "name": "CurrentTransformerSensor"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u voltage_transformer_sensor.py",
+      "host": "localhost",
+      "name": "VoltageTransformerSensor"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u transformer_device.py",
+      "host": "localhost",
+      "name": "TransformerDevice"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u power_transformer.py",
+      "host": "localhost",
+      "name": "PowerTransformer"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u voltage_transformers.py",
+      "host": "localhost",
+      "name": "VoltageTransformer"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u current_transformers.py",
+      "host": "localhost",
+      "name": "CurrentTransformer"
+    },
+    {
+      "directory": ".",
+      "exec": "python -u distribution_transformer.py",
+      "host": "localhost",
+      "name": "DistributionTransformer"
+    }
+  ]
+}
