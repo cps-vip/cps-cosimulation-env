@@ -2,8 +2,9 @@
   "name": "Cosim_HELICS_runner",
   "broker": true,
   "federates": [
-
+"""
     #---------------------------DEVICE_BASE-----------------------------------------------------------------------------------------
+"""
     {
       "directory": "device_modeling/src/device_base",
       "exec": "python -u device.py",
@@ -34,7 +35,7 @@
       "name": "ProtectionRelay"
     },
     {
-      "directory": ""device_modeling/src/process_level,
+      "directory": "device_modeling/src/process_level",
       "exec": "python -u relay_house.py",
       "host": "localhost",
       "name": "RelayHouse"
