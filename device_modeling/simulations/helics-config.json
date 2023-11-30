@@ -2,83 +2,136 @@
   "name": "Cosim_HELICS_runner",
   "broker": true,
   "federates": [
+
+    #---------------------------DEVICE_BASE-----------------------------------------------------------------------------------------
     {
-      "directory": ".",
-      "exec": "python -u circuit_breakers.py",
+      "directory": "device_modeling/src/device_base",
+      "exec": "python -u device.py",
       "host": "localhost",
-      "name": "CircuitBreaker"
+      "name": "Device"
     },
+    
+
+    #---------------------------PROCESS_LEVEL_FEDERATES------------------------------------------------------------------------------
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level",
       "exec": "python -u process_device.py",
       "host": "localhost",
       "name": "ProcessDevice"
     },
+    
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level",
+      "exec": "python -u circuit_breakers.py",
+      "host": "localhost",
+      "name": "CircuitBreaker"
+    },
+    
+    {
+      "directory": "device_modeling/src/process_level",
       "exec": "python -u protection_relays.py",
       "host": "localhost",
       "name": "ProtectionRelay"
     },
     {
-      "directory": ".",
+      "directory": ""device_modeling/src/process_level,
       "exec": "python -u relay_house.py",
       "host": "localhost",
       "name": "RelayHouse"
     },
+
+  #----------------------------SENSOR_DEVICES------------------------------------------------------------------------------------------
     {
-      "directory": ".",
-      "exec": "python -u voltage_current_sensors.py",
-      "host": "localhost",
-      "name": "VoltageCurrentSensor"
-    },
-    {
-      "directory": "./device_modeling/src/process_level/sensors",
+      "directory": "device_modeling/src/process_level/sensors",
       "exec": "python -u sensor_device.py",
       "host": "localhost",
       "name": "SensorDevice"
     },
+    
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level",
+      "exec": "python -u voltage_current_sensors.py",
+      "host": "localhost",
+      "name": "VoltageCurrentSensor"
+    },
+    
+    {
+      "directory": "device_modeling/src/process_level/sensors",
       "exec": "python -u current_transformer_sensor.py",
       "host": "localhost",
       "name": "CurrentTransformerSensor"
     },
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level/sensors",
       "exec": "python -u voltage_transformer_sensor.py",
       "host": "localhost",
       "name": "VoltageTransformerSensor"
     },
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level/transformers",
       "exec": "python -u transformer_device.py",
       "host": "localhost",
       "name": "TransformerDevice"
     },
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level/transformers",
       "exec": "python -u power_transformer.py",
       "host": "localhost",
       "name": "PowerTransformer"
     },
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level/transformers",
       "exec": "python -u voltage_transformers.py",
       "host": "localhost",
       "name": "VoltageTransformer"
     },
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level/transformers",
       "exec": "python -u current_transformers.py",
       "host": "localhost",
       "name": "CurrentTransformer"
     },
     {
-      "directory": ".",
+      "directory": "device_modeling/src/process_level/transformers",
       "exec": "python -u distribution_transformer.py",
       "host": "localhost",
       "name": "DistributionTransformer"
+    },
+
+    #-----------------------------BAY_LEVEL_FEDERATES-------------------------------------------------------------------------------
+
+      
+    {
+      "directory": "device_modeling/src/bay_level",
+      "exec": "python -u bay_device.py",
+      "host": "localhost",
+      "name": "BayDevice"
+    },
+    
+    
+    {
+      "directory": "device_modeling/src/bay_level",
+      "exec": "python -u bay_controllers.py",
+      "host": "localhost",
+      "name": "BayControllers"
+    },
+
+
+    {
+      "directory": "device_modeling/src/bay_level",
+      "exec": "python -u circuit_breakers.py",
+      "host": "localhost",
+      "name": "CircuitBreakers"
+    },
+
+    {
+      "directory": "device_modeling/src/bay_level",
+      "exec": "python -u switchgear.py",
+      "host": "localhost",
+      "name": "SwitchGear"
     }
+
+
+    
   ]
 }
