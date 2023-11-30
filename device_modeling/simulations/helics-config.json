@@ -41,7 +41,7 @@
       "name": "RelayHouse"
     },
 
-  #----------------------------SENSOR_DEVICES------------------------------------------------------------------------------------------
+  #                  SENSOR_DEVICE_FEDERATES
     {
       "directory": "device_modeling/src/process_level/sensors",
       "exec": "python -u sensor_device.py",
