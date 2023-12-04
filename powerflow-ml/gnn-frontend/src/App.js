@@ -17,11 +17,15 @@ export default function App() {
   ];
 
   useEffect(() => {
-    setNodes(initialNodes);
-    console.log(initialNodes);
+    if (nodes.length < 1) {
+      setNodes(initialNodes);
+      console.log(initialNodes);
+    }
   }, [])
 
- 
+  useEffect(() => {
+    console.log("rerendering")
+  }, [voltageMap])
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
@@ -39,7 +43,7 @@ export default function App() {
     const idMap = {};
     e.preventDefault()
     const voltages = [];
-    invertMap = {};
+    setInvertMap({});
     Object.keys(voltageMap).forEach((key, i) => {
       idMap[key] = i;
       voltages.push(parseInt(voltageMap[key]));
@@ -53,36 +57,48 @@ export default function App() {
       src.push(idMap[edge.source], idMap[edge.target]);
       dest.push(idMap[edge.target], idMap[edge.source]);
     })
-    const steps = document.getElementById("steps").value
+    const steps = parseInt(document.getElementById("steps").value)
     const body = {
       src,
       dest,
       steps,
       voltages
     }
-    console.log(body)
+    console.log(JSON.stringify(body))
+    fetch("http://localhost:8000", {
+      method: "POST",
+      body: JSON.stringify(body)
+    }).then((out) => out.json().then((final) => {
+      final.voltages.forEach((voltage, i) => {
+        console.log(nodes[0].data.label)
+        console.log(nodes.filter((node) => node.data.label.id === voltageMap[invertMap[i]]));
+      })
+
+      setVoltageMap(voltageMap);
+      console.log(voltageMap)
+    }))
   }
-  return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Powerflow ML Visualizer</h1>
-      <div style={{ width: '100vw', height: '100vh', borderColor: 'black' }}>
-        <ReactFlow
-          style={{maxHeight: "75%"}}
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-        />
-        
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginRight: "-10%" }}>
-          Simulate for <input type="text" style={{width: "2%"}} id="steps"></input> steps
-          </div>
-          <button style={{width: "5%", height: "5%", fontWeight: "550", marginRight: "-10%"}}>Submit</button>
-        </form>
-        <button style={{float: "right", height: "5%", width: "5%", marginRight: "10%", backgroundColor: "#adc178", fontSize: "24px"}} onClick={addLoad}>+</button>
+    return (
+      <div style={{ textAlign: "center" }}>
+        <h1>Powerflow ML Visualizer</h1>
+        <div style={{ width: '100vw', height: '100vh', borderColor: 'black' }}>
+          <ReactFlow
+            style={{maxHeight: "75%"}}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+          />
+          
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginRight: "-10%" }}>
+            Simulate for <input type="text" style={{width: "2%"}} id="steps"></input> steps
+            </div>
+            <button style={{width: "5%", height: "5%", fontWeight: "550", marginRight: "-10%"}}>Submit</button>
+          </form>
+          <button style={{float: "right", height: "5%", width: "5%", marginRight: "10%", backgroundColor: "#adc178", fontSize: "24px"}} onClick={addLoad}>+</button>
+        </div>
       </div>
-    </div>
-  );
+    );
 }

@@ -4,14 +4,10 @@ export function VoltageLabel({initVoltage, voltageMap, setVoltageMap, id, nodes,
     const [voltage, setVoltage] = useState(initVoltage);
     const [btnState, setBtnState] = useState(true);
     useEffect(() => {
-        voltageMap[id] = voltage;
-        setVoltageMap(voltageMap);
-        console.log(voltageMap);
+            voltageMap[id] = voltage;
+            setVoltageMap(voltageMap);
+            console.log(voltageMap);
     }, [voltage])
-
-    useEffect(() => {
-        setVoltage(voltageMap[id]);
-    }, [voltageMap])
 
     const handleBtnClick = () => {
         if (btnState) {
