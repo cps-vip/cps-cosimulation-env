@@ -1,0 +1,66 @@
+{
+    "coreInit": "--federates=1",
+    "coreName": "Distribution Federate",
+    "coreType": "zmq",
+    "name": "DistributionSim",
+    "offset": 0.0,
+    "period": 60,
+    "timeDelta": 1.0,
+    "logfile": "output.log",
+    "log_level": "warning",
+    "publications" : [
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/totalLoad",
+               "type" : "complex",
+               "unit" : "VA",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_load"
+               }
+          },
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/currentA",
+               "type" : "complex",
+               "unit" : "A",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_current_A"
+               }
+          },
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/currentB",
+               "type" : "complex",
+               "unit" : "A",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_current_B"
+               }
+          },
+          {
+               "global" : true,
+               "key" : "IEEE_123_feeder_0/currentC",
+               "type" : "complex",
+               "unit" : "A",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "distribution_current_C"
+               }
+          }
+
+    ],
+    "subscriptions" : [
+          {
+               "required": true,
+               "key" : "TransmissionSim/transmission_voltage",
+               "type" : "complex",
+               "unit" : "V",
+               "info" : {
+                    "object" : "network_node",
+                    "property" : "positive_sequence_voltage"
+                    }
+          }
+    ]
+}
