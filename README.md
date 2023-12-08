@@ -80,3 +80,6 @@ If you run `nix develop` and encounter an error such as:
 `error: could not set permissions on '/nix/var/nix/profiles/per-user' to 755: Operation not permitted`
 
 Nix might have been installed with incorrect flags. One cause of this is following the Mac/Linux Nix installation when on WSL2, where the `--daemon` flag is causing the error. Double check the installation command on Nix's official website here: `https://nixos.org/download`.
+
+# ROS-HELICS Integration Example
+The example currently does not function as intended but it is a work in progress. Please refer to the entry on **Week 12** in [this notebook](https://github.com/cps-vip/cps-cosimulation-env/wiki/Raj-Patel-Notebook) for more information. 
