@@ -1,5 +1,6 @@
 from process_level.process_device import ProcessDevice
-
+from dnp3_python.dnp3station.outstation_new import MyOutStationNew
+from dnp3_python.dnp3station.master_new import MyMasterNew
 
 class CircuitBreaker(ProcessDevice):
 
@@ -20,6 +21,7 @@ class CircuitBreaker(ProcessDevice):
         self.is_closed = True  # Circuit breaker is initially closed
         self.position  = 0     # 0 for open, 1 for closed
         self.trip_cmd  = False
+        self.master_station = MyMasterNew()
 
 
     def close(self):
