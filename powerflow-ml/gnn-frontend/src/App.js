@@ -4,14 +4,20 @@ import { useEffect } from 'react';
 import 'reactflow/dist/style.css';
 import { VoltageLabel } from './VoltageLabel';
 import { useState } from 'react';
- 
- 
+
+const ModelMode = {
+  GCN: 1,
+  GAT: 2,
+  GIN: 3
+}
+
 export default function App() {
   const [voltageMap, setVoltageMap] = useState({});
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [maxId, setMaxId] = useState(3);
   const [invertMap, setInvertMap] = useState({});
+  const [mode, setMode] = useState(ModelMode.GCN);
   const initialNodes = [
     { id: '1', position: { x: 0, y: 0 }, data: { label: <VoltageLabel voltageMap={voltageMap} setVoltageMap={setVoltageMap} initVoltage={0.0} id={"1"} nodes={nodes} setNodes={setNodes}></VoltageLabel> } },
   ];
@@ -31,6 +37,9 @@ export default function App() {
     [setEdges],
   );
 
+  const onChangeHandler = (e) => {
+    setMode(e.target.value)
+  }
   const addLoad = () => {
     console.log(nodes)
     nodes.push({ id: maxId.toString(), position: { x: nodes[nodes.length - 1].position.x, y: nodes[nodes.length - 1].position.y }, data: { label: <VoltageLabel voltageMap={voltageMap} setVoltageMap={setVoltageMap} initVoltage={0.0} id={maxId.toString()} nodes={nodes} setNodes={setNodes}></VoltageLabel> } })
@@ -62,9 +71,10 @@ export default function App() {
       src,
       dest,
       steps,
-      voltages
+      voltages,
+      mode
     }
-    console.log(JSON.stringify(body))
+
     fetch("http://localhost:8000", {
       method: "POST",
       body: JSON.stringify(body)
@@ -94,6 +104,14 @@ export default function App() {
           <form onSubmit={handleSubmit}>
             <div style={{ marginRight: "-10%" }}>
             Simulate for <input type="text" style={{width: "2%"}} id="steps"></input> steps
+            </div>
+            <div style={{marginRight: "-10%"}}>
+            <label>Model Mode: </label>
+            <select onChange={onChangeHandler}>
+              <option value={ModelMode.GCN} selected>GCN</option>
+              <option value={ModelMode.GAT}>GAT</option>
+              <option value={ModelMode.GIN}>GIN</option>
+            </select>
             </div>
             <button style={{width: "5%", height: "5%", fontWeight: "550", marginRight: "-10%"}}>Submit</button>
           </form>
