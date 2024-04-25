@@ -1,0 +1,40 @@
+{
+    "coreInit": "--federates=1",
+    "coreName": "Relay Federate",
+    "coreType": "zmq",
+    "name": "Relay",
+    "offset": 0,
+    "period": 60,
+    "timeDelta": 1,
+    "logfile": "output.log",
+    "log_level": "warning",
+    "uninterruptible": true,
+    "publications": [
+    ],
+    "subscriptions": [
+        {
+        "name": "CurrentA",
+        "key": "IEEE_123_feeder_0/currentA",
+        "type": "complex",
+        "required": true
+        },
+        {
+        "name": "CurrentB",
+        "key": "IEEE_123_feeder_0/currentB",
+        "type": "complex",
+        "required": true
+        },
+        {
+        "name": "CurrentC",
+        "key": "IEEE_123_feeder_0/currentC",
+        "type": "complex",
+        "required": true
+        },
+        {
+        "name": "TotalLoad",
+        "key": "IEEE_123_feeder_0/totalLoad",
+        "type": "complex",
+        "required": true
+        }
+    ]
+}

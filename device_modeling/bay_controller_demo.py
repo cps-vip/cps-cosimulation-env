@@ -1,7 +1,7 @@
 # python3 bay_controller_demo.py - Run under "device_modeling" folder
 
-from bay_level.bay_device import BayDevice
-from bay_level.bay_controllers import BayController
+from src.bay_level.bay_device import BayDevice
+from src.bay_level.bay_controllers import BayController
 import time
 
 # Create a BayController
