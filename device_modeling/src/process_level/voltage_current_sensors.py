@@ -1,3 +1,6 @@
+
+#duplicate file
+'''
 from src.process_level.process_device import ProcessDevice
 
 class VoltageCurrentSensor(ProcessDevice):
@@ -19,3 +22,4 @@ class VoltageCurrentSensor(ProcessDevice):
 
     def print_sensor_data(self):
         print(f"Voltage: {self.voltage} V, Current: {self.current} A")
+'''

@@ -1,9 +1,9 @@
 from typing import List
 
 class Transformer:
-    def __init__(self, name: str, communication_protocol: str, transformer_type: str):
+    def __init__(self, name: str, protocol: str, transformer_type: str):
         self.name = name
-        self.communication_protocol = communication_protocol
+        self.protocol = protocol
         self.transformer_type = transformer_type
         self.primary_voltage: float = 0.0
         self.secondary_voltage: float = 0.0
@@ -12,6 +12,8 @@ class Transformer:
 
 
     def set_primary_voltage(self, voltage: float) -> None:
+        if voltage <= 0:
+            raise ValueError("Voltage need to set other than zero")
         self.primary_voltage = voltage
 
 
@@ -36,7 +38,6 @@ class Transformer:
     def get_secondary_voltage(self) -> float:
         return self.secondary_voltage
 
-
     def set_tap(self, position: int) -> None:
         if 0 <= position < len(self.taps):
             self.tap_position = position
@@ -47,21 +48,6 @@ class Transformer:
     def get_tap(self) -> int:
         return self.tap_position
 
-
-    def set_taps(self, turn_ratios: List[float]) -> None:
-
-        # Validate if the provided list contains valid turn ratios less than 1
-        for ratio in turn_ratios:
-            if not 0 <= ratio <= 1:
-                raise ValueError("Turn ratios should be greater than or equal than 0 and less than or equal than 1.")
-
-        # Assign the provided list of turn ratios to self.taps
-        self.taps = turn_ratios
-
-
-    def get_taps(self) -> List[int]:
-        return [tap for tap in self.taps if tap != self.taps[self.tap_position]]
-    
     def set_state(self, primary_voltage: float, secondary_voltage: float, tap: int, num_taps: int) -> None:
         self.set_primary_voltage(primary_voltage)
         self.set_secondary_voltage(secondary_voltage)

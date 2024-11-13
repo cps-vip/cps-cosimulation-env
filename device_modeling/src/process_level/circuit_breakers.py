@@ -22,7 +22,7 @@ class CircuitBreaker(ProcessDevice):
         self.trip_cmd  = False
 
 
-    def close(self):
+    def close(self): 
         """
         Method to close the circuit breaker.
 

@@ -1,6 +1,17 @@
-import helics as h
+import sys
+import os
+import helics as h 
 import time
 import logging
+
+
+
+#device
+from process_level.protection_relays. import ProcessDevice
+from process_level.transformers.distribution_transformer import DistributionTransformer
+from process_level.circuit_breakers import CircuitBreaker 
+from bay_level.bay_controllers import BayController 
+
 
 
 # Create a logger instance
@@ -18,6 +29,7 @@ logger.debug("This is a debug message")
 #logger.warning("This is a warning message")
 #logger.error("This is an error message")
 #logger.critical("This is a critical message")
+
 
 
 def create_broker():
@@ -140,19 +152,17 @@ def fault_response(protection_relay, circuit_breaker, endpoint_circuit_breaker):
 
 
 def fault_recovery(transformer, bay_controller, endpoint_main_transformer):
+    if __name__ == "__main__":
+        broker = create_broker()
+        fed, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb = setup_federate()
 
+        transformer      = Transformer(name="MainTransformer", communication_protocol="Modbus", transformer_type="Distribution")
+        protection_relay = ProtectionRelay(name="Relay1", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0, communication_protocol="DNP3")
+        circuit_breaker  = CircuitBreaker(name="CB1", protocol="IEC61850", max_current=200.0)
+        bay_controller   = BayController(name="Bay1")
 
-if __name__ == "__main__":
-    broker = create_broker()
-    fed, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb = setup_federate()
-
-    transformer      = Transformer(name="MainTransformer", communication_protocol="Modbus", transformer_type="Distribution")
-    protection_relay = ProtectionRelay(name="Relay1", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0, communication_protocol="DNP3")
-    circuit_breaker  = CircuitBreaker(name="CB1", protocol="IEC61850", max_current=200.0)
-    bay_controller   = BayController(name="Bay1")
-
-    bay_controller.add_device(transformer)
-    bay_controller.add_device(protection_relay)
-    bay_controller.add_device(circuit_breaker)
+        bay_controller.add_device(transformer)
+        bay_controller.add_device(protection_relay)
+        bay_controller.add_device(circuit_breaker)
 
     run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_controller, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb)
