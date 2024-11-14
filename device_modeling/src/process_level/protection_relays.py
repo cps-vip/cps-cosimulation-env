@@ -1,8 +1,8 @@
 from src.process_level.process_device import ProcessDevice
         
 class ProtectionRelay(ProcessDevice):
-    def __init__(self, name: str, relay_type: str, current_rating: float, voltage_rating: float, communication_protocol: str):
-        super().__init__(name, communication_protocol)
+    def __init__(self, name: str, relay_type: str, current_rating: float, voltage_rating: float):
+        super().__init__(name)
         self.relay_type = relay_type
         self.current_rating = current_rating
         self.voltage_rating = voltage_rating

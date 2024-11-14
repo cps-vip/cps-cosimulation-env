@@ -5,8 +5,8 @@ import random
 from uuid import uuid4
 
 class RelayHouse(ProcessDevice):
-    def __init__(self, name: str, communication_protocol: str, relays = {}):
-        super().__init__(name, communication_protocol)
+    def __init__(self, name: str, relays = {}):
+        super().__init__(name)
         self.relays = relays
         self.temperature = 25  # Default temperature in Celsius
         self.status = "Normal"  # Default status
