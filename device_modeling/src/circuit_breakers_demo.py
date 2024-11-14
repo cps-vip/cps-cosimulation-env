@@ -3,7 +3,7 @@
 from process_level.circuit_breakers import CircuitBreaker  # Assuming your CircuitBreaker class is in a separate module named circuit_breaker
 
 # Instantiate a CircuitBreaker
-cb = CircuitBreaker(name="CB1", protocol="Protocol1", max_current=100.0)
+cb = CircuitBreaker(name="CB1", max_current=100.0)
 
 # Perform operations that should comply with contracts
 try:

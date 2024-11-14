@@ -3,7 +3,7 @@ from process_level.process_device import ProcessDevice
 
 class CircuitBreaker(ProcessDevice):
 
-    def __init__(self, name: str, protocol: str, max_current: float):
+    def __init__(self, name: str, max_current: float):
         """
         Constructor for the CircuitBreaker class.
         
@@ -15,7 +15,7 @@ class CircuitBreaker(ProcessDevice):
             protocol (str): The communication protocol used.
             max_current (float): The maximum current rating of the circuit breaker.
         """
-        super().__init__(name, protocol)
+        super().__init__(name)
         self.max_current = max_current
         self.is_closed = True  # Circuit breaker is initially closed
         self.position  = 0     # 0 for open, 1 for closed
