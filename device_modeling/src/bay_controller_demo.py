@@ -8,8 +8,8 @@ import time
 bay_controller = BayController("Demo Bay")
 
 # Create some BayDevices and add them to the BayController
-device1 = BayDevice("Load1", "IEC61850", "Power Bay")
-device2 = BayDevice("Generator1", "Modbus", "Power Bay")
+device1 = BayDevice("Load1", "Power Bay")
+device2 = BayDevice("Generator1", "Power Bay")
 
 bay_controller.add_device(device1)
 bay_controller.add_device(device2)

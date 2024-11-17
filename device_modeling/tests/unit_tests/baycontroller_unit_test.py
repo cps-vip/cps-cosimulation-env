@@ -9,8 +9,8 @@ class TestBayController(unittest.TestCase):
 
     def setUp(self):
         self.bay = BayController("TestBay")
-        self.device1 = BayDevice("Device1", "Active", "IEC61850")
-        self.device2 = BayDevice("Device2", "Inactive", "IEC61850")
+        self.device1 = BayDevice("Device1", "Active")
+        self.device2 = BayDevice("Device2", "Inactive")
         self.bay.add_device(self.device1)
         self.bay.add_device(self.device2)
 

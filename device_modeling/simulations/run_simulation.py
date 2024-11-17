@@ -156,9 +156,9 @@ def fault_recovery(transformer, bay_controller, endpoint_main_transformer):
         broker = create_broker()
         fed, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb = setup_federate()
 
-        transformer      = Transformer(name="MainTransformer", communication_protocol="Modbus", transformer_type="Distribution")
-        protection_relay = ProtectionRelay(name="Relay1", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0, communication_protocol="DNP3")
-        circuit_breaker  = CircuitBreaker(name="CB1", protocol="IEC61850", max_current=200.0)
+        transformer      = Transformer(name="MainTransformer", transformer_type="Distribution")
+        protection_relay = ProtectionRelay(name="Relay1", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0)
+        circuit_breaker  = CircuitBreaker(name="CB1", max_current=200.0)
         bay_controller   = BayController(name="Bay1")
 
         bay_controller.add_device(transformer)

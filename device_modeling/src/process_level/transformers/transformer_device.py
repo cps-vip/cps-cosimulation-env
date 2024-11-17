@@ -1,9 +1,8 @@
 from typing import List
 
 class Transformer:
-    def __init__(self, name: str, protocol: str, transformer_type: str):
+    def __init__(self, name: str, transformer_type: str):
         self.name = name
-        self.protocol = protocol
         self.transformer_type = transformer_type
         self.primary_voltage: float = 0.0
         self.secondary_voltage: float = 0.0

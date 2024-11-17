@@ -81,35 +81,31 @@ class BayController:
         """
         for device in self.devices:
             if device.get_status() == "Active":
-                # Check the voltage of each active device
-                if device.get_communication_protocol() == "IEC61850":
-                    # Assuming IEC61850 protocol for voltage regulation
-                    current_voltage = self.measure_voltage(device)
-                    self.voltage_history.append(current_voltage)  # Log voltage
-                    voltage_difference = current_voltage - self.target_voltage
+                # Assuming IEC61850 protocol for voltage regulation
+                current_voltage = self.measure_voltage(device)
+                self.voltage_history.append(current_voltage)  # Log voltage
+                voltage_difference = current_voltage - self.target_voltage
 
-                    if abs(voltage_difference) > self.voltage_margin:
-                        # Implement voltage regulation control logic only when out of acceptable range
-                        if voltage_difference > 0:
-                            # Voltage is too high, reduce it
-                            reduction_amount = min(voltage_difference, self.voltage_margin)
-                            new_voltage = current_voltage - reduction_amount
-                            print(f"Reducing voltage for {device.get_device_name()} by {reduction_amount} V.")
-                        else:
-                            # Voltage is too low, increase it
-                            increase_amount = min(-voltage_difference, self.voltage_margin)
-                            new_voltage = current_voltage + increase_amount
-                            print(f"Increasing voltage for {device.get_device_name()} by {increase_amount} V.")
-
-                        # Set the target voltage of the device to maintain it
-                        #device.target_voltage = new_voltage
-                        #self.voltage_history[-1] = new_voltage  # Update the last recorded voltage with the adjusted voltage
-                        self.voltage_history.append(new_voltage)
-
+                if abs(voltage_difference) > self.voltage_margin:
+                    # Implement voltage regulation control logic only when out of acceptable range
+                    if voltage_difference > 0:
+                        # Voltage is too high, reduce it
+                        reduction_amount = min(voltage_difference, self.voltage_margin)
+                        new_voltage = current_voltage - reduction_amount
+                        print(f"Reducing voltage for {device.get_device_name()} by {reduction_amount} V.")
                     else:
-                        print(f"{device.get_device_name()} voltage within acceptable range.")
+                        # Voltage is too low, increase it
+                        increase_amount = min(-voltage_difference, self.voltage_margin)
+                        new_voltage = current_voltage + increase_amount
+                        print(f"Increasing voltage for {device.get_device_name()} by {increase_amount} V.")
+
+                    # Set the target voltage of the device to maintain it
+                    #device.target_voltage = new_voltage
+                    #self.voltage_history[-1] = new_voltage  # Update the last recorded voltage with the adjusted voltage
+                    self.voltage_history.append(new_voltage)
+
                 else:
-                    print(f"{device.get_device_name()} does not use IEC61850 protocol.")
+                    print(f"{device.get_device_name()} voltage within acceptable range.")
 
 
     def measure_voltage(self, device: BayDevice) -> float:

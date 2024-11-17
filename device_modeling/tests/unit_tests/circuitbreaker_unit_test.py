@@ -7,7 +7,7 @@ class TestCircuitBreaker(unittest.TestCase):
 
     def setUp(self):
         # Create a CircuitBreaker instance for testing
-        self.circuit_breaker = CircuitBreaker(name="CB_Prototype", protocol="IEC61850", max_current=100.0)
+        self.circuit_breaker = CircuitBreaker(name="CB_Prototype", max_current=100.0)
 
     def test_close_circuit_breaker(self):
         self.circuit_breaker.open()   # Open it first
