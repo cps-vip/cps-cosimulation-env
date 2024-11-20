@@ -2,8 +2,8 @@ import os
 
 from ctypes import CDLL, c_char_p, c_uint16, c_int
 
-from config_classes import OutstationConfig, ServerPtr, AddressFilterPtr, OutstationPtr, RuntimePtr
-from src.device_base.device import Device, DeviceState
+from dnp3.config_classes import OutstationConfig, ServerPtr, AddressFilterPtr, OutstationPtr, RuntimePtr
+from device_base.device import Device, DeviceState
 
 # Have to supply absolute path if the shared library isn't in /usr/lib
 liboutpath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/liboutstation.so'))

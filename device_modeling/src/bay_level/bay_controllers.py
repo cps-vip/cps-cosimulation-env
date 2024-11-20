@@ -1,9 +1,10 @@
 from bay_level.bay_device import BayDevice
+from dnp3.dnp3_outstation import DNP3Outstation
 import random
 import matplotlib.pyplot as plt
 
-class BayController:
-    def __init__(self, name: str):
+class BayController(DNP3Outstation):
+    def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str):
         """
         Constructor for the BayController class.
         
@@ -13,6 +14,7 @@ class BayController:
         Args:
             name (str): The name of the bay controller.
         """
+        super().__init__(name, outstation_addr, master_addr, socket_addr)
         self.name = name
         self.devices = []          # List to store BayDevice objects
         self.target_voltage = 0.0  # The desired target voltage for the bay

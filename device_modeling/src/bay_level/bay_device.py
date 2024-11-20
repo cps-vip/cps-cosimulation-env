@@ -1,8 +1,8 @@
-from device_base.device import Device
+from dnp3.dnp3_outstation import DNP3Outstation
 
-class BayDevice(Device):
-    def __init__(self, name: str, bay_name: str):
-        super().__init__(name)
+class BayDevice(DNP3Outstation):
+    def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str, bay_name: str):
+        super().__init__(name, outstation_addr, master_addr, socket_addr)
         self.bay_name = bay_name
 
     def get_bay_name(self) -> str:
