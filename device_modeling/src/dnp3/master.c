@@ -592,3 +592,11 @@ dnp3_runtime_t* init_runtime()
 void destroy_runtime(dnp3_runtime_t *runtime) {
     dnp3_runtime_destroy(runtime);
 }
+
+void enable_master_channel(dnp3_master_channel_t *channel) {
+    dnp3_master_channel_enable(channel);
+}
+
+void disable_master_channel(dnp3_master_channel_t *channel) {
+    dnp3_master_channel_disable(channel);
+}

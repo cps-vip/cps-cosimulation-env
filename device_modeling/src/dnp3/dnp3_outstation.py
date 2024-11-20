@@ -123,10 +123,10 @@ class DNP3Outstation(Device):
             # Outstation was deactivated, just need to start it up again
             if self._outstation is None or self._outstation.value is None:
                 raise Exception("Outstation was never initialized. Did you accidentally set the device state manually?")
-            enable_outsation = libout.enable_outstation
-            enable_outsation.argtypes = [OutstationPtr]
-            enable_outsation.restype = None
-            enable_outsation(self._outstation)
+            enable_outstation = libout.enable_outstation
+            enable_outstation.argtypes = [OutstationPtr]
+            enable_outstation.restype = None
+            enable_outstation(self._outstation)
             self.state = DeviceState.ACTIVE
         else:
             raise Exception("Cannot activate outstation from state")
@@ -138,9 +138,9 @@ class DNP3Outstation(Device):
 
         if self._outstation is None or self._outstation.value is None:
             raise Exception("Outstation was never initialized. Did you accidentally set the device state manually?")
-        disable_outsation = libout.disable_outstation
-        disable_outsation.argtypes = [OutstationPtr]
-        disable_outsation.restype = None
-        disable_outsation(self._outstation)
+        disable_outstation = libout.disable_outstation
+        disable_outstation.argtypes = [OutstationPtr]
+        disable_outstation.restype = None
+        disable_outstation(self._outstation)
         self.state = DeviceState.INACTIVE
 
