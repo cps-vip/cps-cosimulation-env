@@ -2,7 +2,7 @@
 from transformer_device import Transformer  
 
 # Instantiate a Transformer
-transformer = Transformer(name="Transformer1", protocol="IEC61850", transformer_type="Distribution Transformer")
+transformer = Transformer(name="Transformer1", transformer_type="Distribution Transformer")
 
 # Set transformer parameters
 transformer.set_primary_voltage(10000.0)  # Set primary voltage to 10 kV

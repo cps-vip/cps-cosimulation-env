@@ -37,14 +37,6 @@ class RelayHouse(ProcessDevice):
         else:
             self.access_locked = False
 
-    def communicate(self, data):
-        """
-        Simulate communication behavior using the specified protocol. Implement the communication logic here.
-        """
-        # Implement communication behavior based on the specified protocol
-        pass
-
-
     def set_relays(self, relays):
         self.relays = { i.name: i for i in relays }
     

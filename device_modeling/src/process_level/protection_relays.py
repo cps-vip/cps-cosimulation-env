@@ -20,10 +20,3 @@ class ProtectionRelay(ProcessDevice):
         """
         # Implement the logic here to reset the relay
         self.status = "Active"
-
-    def communicate(self, data):
-        """
-        Simulate communication behavior using the specified protocol. Implement the communication logic here.
-        """
-        # Implement communication behavior based on the specified protocol
-        pass

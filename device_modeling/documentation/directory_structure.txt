@@ -38,11 +38,6 @@ device_modeling/
 │   │   ├── station_gateway.py                 # Implementation for the Station Gateway
 │   │   ├── human_machine_interface.py         # Implementation for Human-Machine Interface (HMI)
 │   │   └── ...
-│   ├── common/                                # Common components shared across layers
-│   │   ├── modbus_interface.py                # Implementation for Modbus communication
-│   │   ├── dnp3_interface.py                  # Implementation for DNP3 communication
-│   │   ├── iec61850_interface.py              # Implementation for IEC 61850 communication
-│   │   └── ...
 │   └── main.py                                # Main Python script to orchestrate the simulation
 │
 ├── tests/

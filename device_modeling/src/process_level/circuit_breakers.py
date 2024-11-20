@@ -7,12 +7,11 @@ class CircuitBreaker(ProcessDevice):
         """
         Constructor for the CircuitBreaker class.
         
-        Initializes the object with a name, communication protocol, and maximum current rating.
+        Initializes the object with a name and maximum current rating.
         Also sets the initial state of the circuit breaker, indicating that it is closed, its position, and trip command.
 
         Args:
             name (str): The name of the circuit breaker.
-            protocol (str): The communication protocol used.
             max_current (float): The maximum current rating of the circuit breaker.
         """
         super().__init__(name)
