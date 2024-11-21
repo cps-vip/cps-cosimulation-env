@@ -1,8 +1,10 @@
 #include "dnp3.h"
 
+#include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 #include <time.h>
 
 dnp3_timestamp_t now()
@@ -580,4 +582,30 @@ void enable_outstation(dnp3_outstation_t *outstation) {
 
 void disable_outstation(dnp3_outstation_t *outstation) {
     dnp3_outstation_disable(outstation);
+}
+
+void binary_update(dnp3_outstation_t *outstation, database_points_t *database_points) {
+    dnp3_database_transaction_t transaction = {
+        .execute = &binary_transaction,
+        .on_destroy = NULL,
+        .ctx = database_points,
+    };
+    dnp3_outstation_transaction(outstation, transaction);
+}
+
+database_points_t* create_default_database_points() {
+    database_points_t* database_points = malloc(sizeof(database_points_t));
+    database_points->binaryValue = false;
+    database_points->doubleBitBinaryValue = DNP3_DOUBLE_BIT_DETERMINED_OFF;
+    database_points->binaryOutputStatusValue = false;
+    database_points->counterValue = 0;
+    database_points->frozenCounterValue = 0;
+    database_points->analogValue = 0.0;
+    database_points->analogOutputStatusValue = 0.0;
+
+    return database_points;
+}
+
+void destroy_database_points(database_points_t* database_points) {
+    free(database_points);
 }

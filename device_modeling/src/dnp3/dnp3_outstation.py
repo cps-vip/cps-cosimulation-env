@@ -2,7 +2,7 @@ import os
 
 from ctypes import CDLL, c_char_p, c_uint16, c_int
 
-from dnp3.config_classes import OutstationConfig, ServerPtr, AddressFilterPtr, OutstationPtr, RuntimePtr
+from dnp3.config_classes import DatabasePointsPtr, OutstationConfig, ServerPtr, AddressFilterPtr, OutstationPtr, RuntimePtr
 from device_base.device import Device, DeviceState
 
 # Have to supply absolute path if the shared library isn't in /usr/lib
@@ -91,6 +91,12 @@ class DNP3Outstation(Device):
             destroy_outstation.restype = None
             destroy_outstation(self._outstation)
 
+        if self._database_points is not None:
+            destroy_database_points = libout.destroy_database_points
+            destroy_database_points.argtypes = [DatabasePointsPtr]
+            destroy_database_points.restype = None
+            destroy_database_points(self._database_points)
+
         if self._tcpserver is not None:
             self._tcpserver.destroy()
 
@@ -116,9 +122,15 @@ class DNP3Outstation(Device):
             init_database.restype = None
             init_database(self._outstation)
 
+            # Create persistent database_points
+            create_points = libout.create_default_database_points
+            create_points.restype = DatabasePointsPtr
+            self._database_points = create_points()
+
             # Start TCP server and change state
             self._tcpserver.start()
             self.state = DeviceState.ACTIVE
+
         elif self.state == DeviceState.INACTIVE:
             # Outstation was deactivated, just need to start it up again
             if self._outstation is None or self._outstation.value is None:
@@ -144,3 +156,15 @@ class DNP3Outstation(Device):
         disable_outstation(self._outstation)
         self.state = DeviceState.INACTIVE
 
+    def run(self):
+        run_outstation = libout.run_outstation
+        run_outstation.argtypes = [OutstationPtr]
+        run_outstation.restype = c_int
+        print("Running")
+        return run_outstation(self._outstation)
+    
+    def binary_transaction(self):
+        binary_update = libout.binary_update
+        binary_update.argtypes = [OutstationPtr, DatabasePointsPtr]
+        binary_update.restype = None
+        binary_update(self._outstation, self._database_points)

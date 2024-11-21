@@ -3,7 +3,7 @@ from process_level.process_device import ProcessDevice
 
 class CircuitBreaker(ProcessDevice):
 
-    def __init__(self, name: str, max_current: float):
+    def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str, max_current: float):
         """
         Constructor for the CircuitBreaker class.
         
@@ -14,7 +14,7 @@ class CircuitBreaker(ProcessDevice):
             name (str): The name of the circuit breaker.
             max_current (float): The maximum current rating of the circuit breaker.
         """
-        super().__init__(name)
+        super().__init__(name, outstation_addr, master_addr, socket_addr)
         self.max_current = max_current
         self.is_closed = True  # Circuit breaker is initially closed
         self.position  = 0     # 0 for open, 1 for closed
@@ -33,6 +33,7 @@ class CircuitBreaker(ProcessDevice):
                 self.is_closed = True
                 self.position  = 1
                 self.trip_cmd  = False
+                self.binary_transaction()
                 print(f"{self.name} circuit breaker is now closed.")
             else:
                 print(f"{self.name} circuit breaker is already closed.")
@@ -52,6 +53,7 @@ class CircuitBreaker(ProcessDevice):
                 self.is_closed = False
                 self.position = 0
                 self.trip_cmd = False
+                self.binary_transaction()
                 print(f"{self.name} circuit breaker is now open.")
             else:
                 print(f"{self.name} circuit breaker is already open.")

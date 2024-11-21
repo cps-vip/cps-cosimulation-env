@@ -324,7 +324,7 @@ int run_channel(dnp3_master_channel_t *channel, int outstation_addr)
     // ANCHOR: add_poll
     dnp3_request_t *poll_request = dnp3_request_new_class(false, true, true, true);
     dnp3_poll_id_t poll_id;
-    err = dnp3_master_channel_add_poll(channel, association_id, poll_request, 5000, &poll_id);
+    err = dnp3_master_channel_add_poll(channel, association_id, poll_request, 1000, &poll_id);
     dnp3_request_destroy(poll_request);
     // ANCHOR_END: add_poll
     if (err) {
@@ -339,208 +339,208 @@ int run_channel(dnp3_master_channel_t *channel, int outstation_addr)
         return -1;
     }
 
-    char cbuf[10];
-    while (true) {
-        fgets(cbuf, 10, stdin); //TODO: automate commands instead of only reading stdin
+    // char cbuf[10];
+    // while (true) {
+    //     fgets(cbuf, 10, stdin); //TODO: automate commands instead of only reading stdin
 
-        if (strcmp(cbuf, "x\n") == 0) {
-            break;
-        }
-        else if (strcmp(cbuf, "enable\n") == 0) {
-            printf("calling enable\n");
-            dnp3_master_channel_enable(channel);
-        }
-        else if (strcmp(cbuf, "disable\n") == 0) {
-            printf("calling disable\n");
-            dnp3_master_channel_disable(channel);
-        }
-        else if (strcmp(cbuf, "dln\n") == 0) {
-            dnp3_master_channel_set_decode_level(channel, dnp3_decode_level_nothing());
-        }
-        else if (strcmp(cbuf, "dlv\n") == 0) {
-            dnp3_decode_level_t level = dnp3_decode_level_nothing();
-            level.application = DNP3_APP_DECODE_LEVEL_OBJECT_VALUES;
-            dnp3_master_channel_set_decode_level(channel, level);
-        }
-        else if (strcmp(cbuf, "rao\n") == 0) {
-            dnp3_request_t *request = dnp3_request_create();
-            dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP40_VAR0);
+    //     if (strcmp(cbuf, "x\n") == 0) {
+    //         break;
+    //     }
+    //     else if (strcmp(cbuf, "enable\n") == 0) {
+    //         printf("calling enable\n");
+    //         dnp3_master_channel_enable(channel);
+    //     }
+    //     else if (strcmp(cbuf, "disable\n") == 0) {
+    //         printf("calling disable\n");
+    //         dnp3_master_channel_disable(channel);
+    //     }
+    //     else if (strcmp(cbuf, "dln\n") == 0) {
+    //         dnp3_master_channel_set_decode_level(channel, dnp3_decode_level_nothing());
+    //     }
+    //     else if (strcmp(cbuf, "dlv\n") == 0) {
+    //         dnp3_decode_level_t level = dnp3_decode_level_nothing();
+    //         level.application = DNP3_APP_DECODE_LEVEL_OBJECT_VALUES;
+    //         dnp3_master_channel_set_decode_level(channel, level);
+    //     }
+    //     else if (strcmp(cbuf, "rao\n") == 0) {
+    //         dnp3_request_t *request = dnp3_request_create();
+    //         dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP40_VAR0);
 
-            dnp3_read_task_callback_t cb = {
-                .on_complete = &on_read_success,
-                .on_failure = &on_read_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_read(channel, association_id, request, cb);
+    //         dnp3_read_task_callback_t cb = {
+    //             .on_complete = &on_read_success,
+    //             .on_failure = &on_read_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_read(channel, association_id, request, cb);
 
-            dnp3_request_destroy(request);
-        }
-        else if (strcmp(cbuf, "rmo\n") == 0) {
-            dnp3_request_t *request = dnp3_request_create();
-            dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP10_VAR0);
-            dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP40_VAR0);
+    //         dnp3_request_destroy(request);
+    //     }
+    //     else if (strcmp(cbuf, "rmo\n") == 0) {
+    //         dnp3_request_t *request = dnp3_request_create();
+    //         dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP10_VAR0);
+    //         dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP40_VAR0);
 
-            dnp3_read_task_callback_t cb = {
-                .on_complete = &on_read_success,
-                .on_failure = &on_read_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_read(channel, association_id, request, cb);
+    //         dnp3_read_task_callback_t cb = {
+    //             .on_complete = &on_read_success,
+    //             .on_failure = &on_read_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_read(channel, association_id, request, cb);
 
-            dnp3_request_destroy(request);
-        }
-        else if (strcmp(cbuf, "cmd\n") == 0) {
-            // ANCHOR: assoc_control
-            dnp3_command_set_t *commands = dnp3_command_set_create();
-            dnp3_group12_var1_t g12v1 = dnp3_group12_var1_init(dnp3_control_code_init(DNP3_TRIP_CLOSE_CODE_NUL, false, DNP3_OP_TYPE_LATCH_ON), 1, 1000, 1000);
-            dnp3_command_set_add_g12_v1_u16(commands, 3, g12v1);
+    //         dnp3_request_destroy(request);
+    //     }
+    //     else if (strcmp(cbuf, "cmd\n") == 0) {
+    //         // ANCHOR: assoc_control
+    //         dnp3_command_set_t *commands = dnp3_command_set_create();
+    //         dnp3_group12_var1_t g12v1 = dnp3_group12_var1_init(dnp3_control_code_init(DNP3_TRIP_CLOSE_CODE_NUL, false, DNP3_OP_TYPE_LATCH_ON), 1, 1000, 1000);
+    //         dnp3_command_set_add_g12_v1_u16(commands, 3, g12v1);
 
-            dnp3_command_task_callback_t cb = {
-                .on_complete = &on_command_success,
-                .on_failure = &on_command_error,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
+    //         dnp3_command_task_callback_t cb = {
+    //             .on_complete = &on_command_success,
+    //             .on_failure = &on_command_error,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
 
-            dnp3_master_channel_operate(channel, association_id, DNP3_COMMAND_MODE_SELECT_BEFORE_OPERATE, commands, cb);
+    //         dnp3_master_channel_operate(channel, association_id, DNP3_COMMAND_MODE_SELECT_BEFORE_OPERATE, commands, cb);
 
-            dnp3_command_set_destroy(commands);
-            // ANCHOR_END: assoc_control
-        }
-        else if (strcmp(cbuf, "evt\n") == 0) {
-            dnp3_master_channel_demand_poll(channel, poll_id);
-        }
-        else if (strcmp(cbuf, "lts\n") == 0) {
-            dnp3_time_sync_task_callback_t cb = {
-                .on_complete = &on_time_sync_success,
-                .on_failure = &on_time_sync_error,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_synchronize_time(channel, association_id, DNP3_TIME_SYNC_MODE_LAN, cb);
-        }
-        else if (strcmp(cbuf, "nts\n") == 0) {
-            dnp3_time_sync_task_callback_t cb = {
-                .on_complete = &on_time_sync_success,
-                .on_failure = &on_time_sync_error,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_synchronize_time(channel, association_id, DNP3_TIME_SYNC_MODE_NON_LAN, cb);
-        }
-        else if (strcmp(cbuf, "wad\n") == 0) {
-            // ANCHOR: write_dead_bands
-            dnp3_empty_response_callback_t cb = {
-                .on_complete = &on_generic_success,
-                .on_failure = &on_generic_failure,
-                .on_destroy = NULL,
-                .ctx = "write dead-bands",
-            };
+    //         dnp3_command_set_destroy(commands);
+    //         // ANCHOR_END: assoc_control
+    //     }
+    //     else if (strcmp(cbuf, "evt\n") == 0) {
+    //         dnp3_master_channel_demand_poll(channel, poll_id);
+    //     }
+    //     else if (strcmp(cbuf, "lts\n") == 0) {
+    //         dnp3_time_sync_task_callback_t cb = {
+    //             .on_complete = &on_time_sync_success,
+    //             .on_failure = &on_time_sync_error,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_synchronize_time(channel, association_id, DNP3_TIME_SYNC_MODE_LAN, cb);
+    //     }
+    //     else if (strcmp(cbuf, "nts\n") == 0) {
+    //         dnp3_time_sync_task_callback_t cb = {
+    //             .on_complete = &on_time_sync_success,
+    //             .on_failure = &on_time_sync_error,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_synchronize_time(channel, association_id, DNP3_TIME_SYNC_MODE_NON_LAN, cb);
+    //     }
+    //     else if (strcmp(cbuf, "wad\n") == 0) {
+    //         // ANCHOR: write_dead_bands
+    //         dnp3_empty_response_callback_t cb = {
+    //             .on_complete = &on_generic_success,
+    //             .on_failure = &on_generic_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = "write dead-bands",
+    //         };
 
-            dnp3_write_dead_band_request_t *request = dnp3_write_dead_band_request_create();
-            dnp3_write_dead_band_request_add_g34v1_u8(request, 3, 5);
-            dnp3_write_dead_band_request_add_g34v3_u16(request, 4, 2.5f);
+    //         dnp3_write_dead_band_request_t *request = dnp3_write_dead_band_request_create();
+    //         dnp3_write_dead_band_request_add_g34v1_u8(request, 3, 5);
+    //         dnp3_write_dead_band_request_add_g34v3_u16(request, 4, 2.5f);
 
-            dnp3_master_channel_write_dead_bands(channel, association_id, request, cb);
-            dnp3_write_dead_band_request_destroy(request);
-            // ANCHOR_END: write_dead_bands
-        }
-        else if (strcmp(cbuf, "fat\n") == 0) {            
-            dnp3_empty_response_callback_t cb = {
-                .on_complete = &on_generic_success,
-                .on_failure = &on_generic_failure,
-                .on_destroy = NULL,
-                .ctx = "freeze-at-time",
-            };
+    //         dnp3_master_channel_write_dead_bands(channel, association_id, request, cb);
+    //         dnp3_write_dead_band_request_destroy(request);
+    //         // ANCHOR_END: write_dead_bands
+    //     }
+    //     else if (strcmp(cbuf, "fat\n") == 0) {            
+    //         dnp3_empty_response_callback_t cb = {
+    //             .on_complete = &on_generic_success,
+    //             .on_failure = &on_generic_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = "freeze-at-time",
+    //         };
 
-            dnp3_request_t *request = dnp3_request_create();
-            dnp3_request_add_time_and_interval(request, 0xFF0000000000, 865000000);
-            dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP20_VAR0);
+    //         dnp3_request_t *request = dnp3_request_create();
+    //         dnp3_request_add_time_and_interval(request, 0xFF0000000000, 865000000);
+    //         dnp3_request_add_all_objects_header(request, DNP3_VARIATION_GROUP20_VAR0);
                      
             
-            dnp3_master_channel_send_and_expect_empty_response(channel, association_id, DNP3_FUNCTION_CODE_FREEZE_AT_TIME, request, cb);
-            dnp3_request_destroy(request);            
-        }
-        else if (strcmp(cbuf, "rda\n") == 0) {
-            // ANCHOR: read_attributes
-            dnp3_request_t *request = dnp3_request_create();
-            dnp3_request_add_specific_attribute(request, DNP3_ATTRIBUTE_VARIATIONS_ALL_ATTRIBUTES_REQUEST, 0);
+    //         dnp3_master_channel_send_and_expect_empty_response(channel, association_id, DNP3_FUNCTION_CODE_FREEZE_AT_TIME, request, cb);
+    //         dnp3_request_destroy(request);            
+    //     }
+    //     else if (strcmp(cbuf, "rda\n") == 0) {
+    //         // ANCHOR: read_attributes
+    //         dnp3_request_t *request = dnp3_request_create();
+    //         dnp3_request_add_specific_attribute(request, DNP3_ATTRIBUTE_VARIATIONS_ALL_ATTRIBUTES_REQUEST, 0);
 
-            dnp3_read_task_callback_t cb = {
-                .on_complete = &on_read_success,
-                .on_failure = &on_read_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
+    //         dnp3_read_task_callback_t cb = {
+    //             .on_complete = &on_read_success,
+    //             .on_failure = &on_read_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
 
-            dnp3_master_channel_read(channel, association_id, request, cb);
-            dnp3_request_destroy(request);
-            // ANCHOR_END: read_attributes
-        }
-        else if (strcmp(cbuf, "wda\n") == 0) {
-            // ANCHOR: write_attribute
-            dnp3_request_t *request = dnp3_request_create();
-            dnp3_request_add_string_attribute(request, DNP3_ATTRIBUTE_VARIATIONS_USER_ASSIGNED_LOCATION, 0, "Mt. Olympus");
+    //         dnp3_master_channel_read(channel, association_id, request, cb);
+    //         dnp3_request_destroy(request);
+    //         // ANCHOR_END: read_attributes
+    //     }
+    //     else if (strcmp(cbuf, "wda\n") == 0) {
+    //         // ANCHOR: write_attribute
+    //         dnp3_request_t *request = dnp3_request_create();
+    //         dnp3_request_add_string_attribute(request, DNP3_ATTRIBUTE_VARIATIONS_USER_ASSIGNED_LOCATION, 0, "Mt. Olympus");
 
-            dnp3_empty_response_callback_t cb = {
-                .on_complete = &on_generic_success,
-                .on_failure = &on_generic_failure,
-                .on_destroy = NULL,
-                .ctx = "write device attribute",
-            };
-            dnp3_master_channel_send_and_expect_empty_response(channel, association_id, DNP3_FUNCTION_CODE_WRITE, request, cb);
-            dnp3_request_destroy(request);
-            // ANCHOR_END: write_attribute
-        }
-        else if (strcmp(cbuf, "ral\n") == 0) {
-            dnp3_request_t *request = dnp3_request_create();
-            dnp3_request_add_specific_attribute(request, DNP3_ATTRIBUTE_VARIATIONS_LIST_OF_VARIATIONS, 0);
+    //         dnp3_empty_response_callback_t cb = {
+    //             .on_complete = &on_generic_success,
+    //             .on_failure = &on_generic_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = "write device attribute",
+    //         };
+    //         dnp3_master_channel_send_and_expect_empty_response(channel, association_id, DNP3_FUNCTION_CODE_WRITE, request, cb);
+    //         dnp3_request_destroy(request);
+    //         // ANCHOR_END: write_attribute
+    //     }
+    //     else if (strcmp(cbuf, "ral\n") == 0) {
+    //         dnp3_request_t *request = dnp3_request_create();
+    //         dnp3_request_add_specific_attribute(request, DNP3_ATTRIBUTE_VARIATIONS_LIST_OF_VARIATIONS, 0);
 
-            dnp3_read_task_callback_t cb = {
-                .on_complete = &on_read_success,
-                .on_failure = &on_read_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_read(channel, association_id, request, cb);
+    //         dnp3_read_task_callback_t cb = {
+    //             .on_complete = &on_read_success,
+    //             .on_failure = &on_read_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_read(channel, association_id, request, cb);
 
-            dnp3_request_destroy(request);
-        }
-        else if (strcmp(cbuf, "crt\n") == 0) {
-            dnp3_restart_task_callback_t cb = {
-                .on_complete = &on_restart_success,
-                .on_failure = &on_restart_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_cold_restart(channel, association_id, cb);
-        }        
-        else if (strcmp(cbuf, "wrt\n") == 0) {
-            dnp3_restart_task_callback_t cb = {
-                .on_complete = &on_restart_success,
-                .on_failure = &on_restart_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_warm_restart(channel, association_id, cb);
-        }
-        else if (strcmp(cbuf, "lsr\n") == 0) {
-            dnp3_link_status_callback_t cb = {
-                .on_complete = &on_link_status_success,
-                .on_failure = &on_link_status_failure,
-                .on_destroy = NULL,
-                .ctx = NULL,
-            };
-            dnp3_master_channel_check_link_status(channel, association_id, cb);
-        }
-        else {
-            printf("Unknown command\n");
-        }
-    }
+    //         dnp3_request_destroy(request);
+    //     }
+    //     else if (strcmp(cbuf, "crt\n") == 0) {
+    //         dnp3_restart_task_callback_t cb = {
+    //             .on_complete = &on_restart_success,
+    //             .on_failure = &on_restart_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_cold_restart(channel, association_id, cb);
+    //     }        
+    //     else if (strcmp(cbuf, "wrt\n") == 0) {
+    //         dnp3_restart_task_callback_t cb = {
+    //             .on_complete = &on_restart_success,
+    //             .on_failure = &on_restart_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_warm_restart(channel, association_id, cb);
+    //     }
+    //     else if (strcmp(cbuf, "lsr\n") == 0) {
+    //         dnp3_link_status_callback_t cb = {
+    //             .on_complete = &on_link_status_success,
+    //             .on_failure = &on_link_status_failure,
+    //             .on_destroy = NULL,
+    //             .ctx = NULL,
+    //         };
+    //         dnp3_master_channel_check_link_status(channel, association_id, cb);
+    //     }
+    //     else {
+    //         printf("Unknown command\n");
+    //     }
+    // }
 
-    dnp3_master_channel_destroy(channel);
+    // dnp3_master_channel_destroy(channel);
     return 0;
 }
 

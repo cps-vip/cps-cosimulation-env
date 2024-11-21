@@ -3,6 +3,7 @@ from ctypes import CDLL, c_char_p, c_uint16
 from station_level.station_device import StationDevice
 from dnp3.config_classes import RuntimePtr, MasterChannelPtr, MasterChannelConfig
 from device_base.device import DeviceState
+from time import sleep
 
 libmasterpath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/libmaster.so'))
 libmaster = CDLL(libmasterpath)
@@ -51,11 +52,7 @@ class DNP3Master(StationDevice):
     # Implement abstract method in Device base class
     def activate(self) -> None:
         if self.state == DeviceState.INITIALIZED:
-            run_channel = libmaster.run_channel
-            run_channel.argtypes = [MasterChannelPtr, c_uint16]
-            run_channel.restype = c_uint16
-            if run_channel(self._master_channel, self.outstation_dnp3_addr) == -1:
-                raise Exception()
+            self.state = DeviceState.ACTIVE
         elif self.state == DeviceState.INACTIVE:
             # Outstation was deactivated, just need to start it up again
             if self._master_channel is None:
@@ -66,7 +63,7 @@ class DNP3Master(StationDevice):
             enable_master_channel(self._master_channel)
             self.state = DeviceState.ACTIVE
         else:
-            raise Exception("Cannot activate outstation from state")
+            raise Exception("Cannot activate Master from state")
     # Implement abstract method in Device base class
     def deactivate(self) -> None:
         if self.state != DeviceState.ACTIVE:
@@ -78,3 +75,11 @@ class DNP3Master(StationDevice):
         disable_master_channel.restype = None
         disable_master_channel(self._master_channel)
         self.state = DeviceState.INACTIVE
+
+    def run(self):
+        run_channel = libmaster.run_channel
+        run_channel.argtypes = [MasterChannelPtr, c_uint16]
+        run_channel.restype = c_uint16
+        if run_channel(self._master_channel, self.outstation_dnp3_addr) == -1:
+            raise Exception()
+        

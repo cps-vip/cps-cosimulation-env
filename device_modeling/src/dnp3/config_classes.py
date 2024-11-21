@@ -1,4 +1,4 @@
-from ctypes import c_void_p, c_int, c_uint16, Structure, c_bool, c_uint64, c_uint32
+from ctypes import c_double, c_void_p, c_int, c_uint16, Structure, c_bool, c_uint64, c_uint32
 
 class OutstationFeatures(Structure):
     _fields_ = [("self_address", c_bool),
@@ -61,6 +61,17 @@ class MasterChannelConfig(Structure):
 class RuntimeConfig(Structure):
     _fields_ = [("num_core_threads", c_uint16)]
 
+class DatabasePoints(Structure):
+    _fields = [("binaryValue", c_bool),
+               ("doubleBitBinaryValue", c_uint32), #Enum 0-3
+               ("binaryOutputStatusValue", c_bool),
+               ("counterValue", c_uint32),
+               ("frozenCounterValue", c_uint32),
+               ("analogValue", c_double),
+               ("analogOutputStatusValue", c_double),]
+class DatabasePointsPtr(c_void_p):
+    pass
+    
 class RuntimePtr(c_void_p):
     pass
 
