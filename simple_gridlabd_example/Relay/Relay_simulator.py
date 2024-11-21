@@ -98,7 +98,7 @@ if __name__ == "__main__":
         logger.info("{}: Federate Granted Time = {}".format(federate_name,grantedtime))
         for i in range(0, subkeys_count):
             sub = subid["m{}".format(i)]
-            name = h.helicsInputGetTarget(sub) 
+            name = h.helicsInputGetTarget(sub)
             current = h.helicsInputGetComplex(sub)
             logger.info("{}: Substation {} to Distribution System = {} A".format(federate_name, name, current))
         # print(voltage_plot,real_demand)

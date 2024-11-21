@@ -1,0 +1,33 @@
+{
+    "broker": true,
+    "federates":[
+        {
+            "directory":"./Transmission/",
+            "exec":"python Transmission_simulator.py",
+            "logfile":"./results/Transmission.log",
+            "host":"localhost",
+            "name":"TransmissionFederate"
+        },
+        {
+            "directory":"./Distribution/",
+            "exec":"gridlabd.sh IEEE_123_feeder_0.glm",
+            "logfile":"./results/Distribution.log",
+            "host":"localhost",
+            "name":"GridLABDFederate"
+        },
+        {
+            "directory": "device_modeling/src/process_level",
+            "exec": "python -u voltage_current_sensors.py",
+            "host": "localhost",
+            "name": "VoltageCurrentSensor"
+        },
+        {
+            "directory": "device_modeling/src/process_level",
+            "exec": "python -u circuit_breakers.py",
+            "logfile":"./results/CBSim.log",
+            "host": "localhost",
+            "name": "CircuitBreaker"
+        }
+    ],
+    "name":"Example-1a-T-D-Cosimulation-HELICSRunner"
+}

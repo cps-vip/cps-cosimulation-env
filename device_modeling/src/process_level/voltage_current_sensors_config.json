@@ -1,0 +1,28 @@
+{
+    "coreInit": "--federates=1",
+    "coreName": "Voltage Current Sensor Federate",
+    "coreType": "zmq",
+    "name": "VoltageCurrentSensorSim",
+    "offset": 0,
+    "period": 60,
+    "timeDelta": 1,
+    "logfile": "output.log",
+    "log_level": "warning",
+    "uninterruptible": true,
+    "publications": [
+    ],
+    "subscriptions": [
+        {
+        "name": "Current",
+        "key": "IEEE_123_feeder_0/currentA",
+        "type": "complex",
+        "required": true
+        },
+        {
+        "name": "TransmissionVoltage",
+        "key": "IEEE_123_feeder_0/totalLoad",
+        "type": "complex",
+        "required": true
+        }
+    ]
+}

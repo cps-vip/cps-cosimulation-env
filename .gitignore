@@ -4,6 +4,8 @@ HELICS/build
 **/CMakeCache.txt
 */results
 /results
+results/
+__pycache__/
 
 **/.DS_Store
 **/.idea
