@@ -16,6 +16,7 @@ class PowerFlowGAT(torch.nn.Module):
         x = F.elu(x)
         return x
 
+
 if (__name__ == "__main__"):
     # Define a simple electrical grid as a graph
     edge_index = torch.tensor([[0, 1, 1, 2, 2, 3, 3, 0], [1, 0, 2, 1, 3, 2, 0, 3]], dtype=torch.long)
