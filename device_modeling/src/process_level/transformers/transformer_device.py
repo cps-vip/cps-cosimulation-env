@@ -4,10 +4,9 @@ class Transformer:
     def __init__(self, name: str, transformer_type: str):
         self.name = name
         self.transformer_type = transformer_type
-        self.primary_voltage: float = 0.0
-        self.secondary_voltage: float = 0.0
-        self.tap_position: int = 0
-        self.taps: List[int] = []
+        self.primary_voltage: float = 0.0 #input voltage
+        self.secondary_voltage: float = 0.0 #output voltage
+        self.tap_position: float = 1.0
 
 
     def set_primary_voltage(self, voltage: float) -> None:
@@ -37,13 +36,9 @@ class Transformer:
     def get_secondary_voltage(self) -> float:
         return self.secondary_voltage
 
-    def set_tap(self, position: int) -> None:
-        if 0 <= position < len(self.taps):
-            self.tap_position = position
-        else:
-            print("Invalid tap position. Tap position remains unchanged.")
-
-
+    def set_tap(self, position: float) -> None:
+        self.tap_position = position
+        
     def get_tap(self) -> int:
         return self.tap_position
 
@@ -53,23 +48,13 @@ class Transformer:
         self.set_tap(tap)
         self.set_taps(num_taps)
 
-
     def get_transformer_type(self) -> str:
         return self.transformer_type
 
-
-    def get_turns_ratio(self) -> int:
-        return self.taps[self.tap_position]
-
-
     def get_output_voltage(self) -> float:
-        return self.primary_voltage * self.get_turns_ratio()
+        return self.get_primary_voltage()
 
-
-    def adjust_voltage(self, adjustment: int) -> None:
-        new_tap_position = self.tap_position + adjustment
-        if 0 <= new_tap_position < len(self.taps):
-            self.tap_position = new_tap_position
-            self.secondary_voltage = self.primary_voltage * self.get_turns_ratio()
-        else:
-            print("Voltage adjustment not possible. Tap position remains unchanged.")
+    def adjust_voltage(self, desired_voltage: float) -> None:
+        ratio = desired_voltage/self.get_primary_voltage
+        self.set_tap(ratio)
+        self.set_secondary_voltage()
