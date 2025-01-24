@@ -15,7 +15,6 @@ class BayController(DNP3Outstation):
             name (str): The name of the bay controller.
         """
         super().__init__(name, outstation_addr, master_addr, socket_addr)
-        self.name = name
         self.devices = []          # List to store BayDevice objects
         self.target_voltage = 0.0  # The desired target voltage for the bay
         self.voltage_margin = 5.0  # A margin for acceptable voltage variation

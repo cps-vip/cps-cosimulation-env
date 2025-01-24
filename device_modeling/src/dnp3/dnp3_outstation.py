@@ -1,9 +1,12 @@
 import os
+import logging
 
 from ctypes import CDLL, c_char_p, c_uint16, c_int
 
 from dnp3.config_classes import DatabasePointsPtr, OutstationConfig, ServerPtr, AddressFilterPtr, OutstationPtr, RuntimePtr
 from device_base.device import Device, DeviceState
+
+log = logging.getLogger(__name__)
 
 # Have to supply absolute path if the shared library isn't in /usr/lib
 liboutpath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/liboutstation.so'))
@@ -12,23 +15,26 @@ libout = CDLL(liboutpath)
 libtcppath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/libtcpserver.so'))
 libtcp = CDLL(libtcppath)
 
+# TODO: Change raise Exception() to something more useful everywhere it appears
 
 class DNP3Outstation(Device):
-    # TODO: Change raise Exception() to something more useful everywhere it appears
+    # Since it's impractical to have a TCP server with multiple outstations,
+    # the TCP server is a private class to the Outstation.
+    # If devices need to modify anything about the TCP server, then add methods to DNP3Outstation
     class TCPServer:
         def __init__(self, socket_addr: str):
             init_runtime = libtcp.init_runtime
             init_runtime.restype = RuntimePtr
             self._runtime = init_runtime()
             if self._runtime.value is None:
-                raise Exception()
+                raise Exception("Failed to create runtime for TCP server")
 
             init_server = libtcp.init_server
             init_server.argtypes = [RuntimePtr, c_char_p]
             init_server.restype = ServerPtr
             self._server = init_server(self._runtime, socket_addr.encode())
             if self._server.value is None:
-                raise Exception()
+                raise Exception("Failed to initialize TCP server")
 
         def destroy(self):
             if self._server is not None and self._server.value is not None:
@@ -48,24 +54,26 @@ class DNP3Outstation(Device):
             start_server.argtypes = [ServerPtr]
             start_server.restype = c_int
             if start_server(self._server) == -1:
-                raise Exception()
+                raise Exception("Failed to start TCP server")
 
 
     def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str):
         # Make sure to initialize the Device base class
         super().__init__(name)
+        log.info("Testing 123")
 
         self._outstation_addr = outstation_addr
         self._master_addr = master_addr
         self._socket_addr = socket_addr
 
-        # One time intitializations belong in init.
+        # One time intitializations belong in init
         create_address_filter = libout.create_address_filter
         create_address_filter.argtypes = [c_char_p]
         create_address_filter.restype = AddressFilterPtr
+        # "any" can be replaced by IP addresses w/ wildcards; e.g., "192.168.0.*"
         self._address_filter = create_address_filter("any".encode())
         if self._address_filter.value is None:
-            raise Exception()
+            raise Exception("Unable to create address filter")
 
         create_outstation_config = libout.create_outstation_config
         create_outstation_config.argtypes = [c_uint16, c_uint16]
@@ -73,6 +81,9 @@ class DNP3Outstation(Device):
         self._config = create_outstation_config(self._outstation_addr, self._master_addr)
 
         self._tcpserver = self.TCPServer(self._socket_addr)
+
+        # Not initialized in __init__, but good practice to show it will be used later
+        self._outstation = None
 
         # This is the property in the Device base class
         self.state = DeviceState.INITIALIZED
@@ -85,13 +96,18 @@ class DNP3Outstation(Device):
             destroy_address_filter.restype = None
             destroy_address_filter(self._address_filter)
 
+        # The double checks (one for the pointer, one for the value of the pointer)
+        # is especially important here, since self._outstation is still None after
+        # __init__. Note that for other error checks, .value is usually the important
+        # one, since even returning 0/NULL from C will still leave the pointer with
+        # a value
         if self._outstation is not None and self._outstation.value is not None:
             destroy_outstation = libout.destroy_outstation
             destroy_outstation.argtypes = [OutstationPtr]
             destroy_outstation.restype = None
             destroy_outstation(self._outstation)
 
-        if self._database_points is not None:
+        if self._database_points is not None and self._database_points is not None:
             destroy_database_points = libout.destroy_database_points
             destroy_database_points.argtypes = [DatabasePointsPtr]
             destroy_database_points.restype = None
@@ -160,7 +176,6 @@ class DNP3Outstation(Device):
         run_outstation = libout.run_outstation
         run_outstation.argtypes = [OutstationPtr]
         run_outstation.restype = c_int
-        print("Running")
         return run_outstation(self._outstation)
     
     def binary_transaction(self):

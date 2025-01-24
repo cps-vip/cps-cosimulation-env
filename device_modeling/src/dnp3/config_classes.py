@@ -57,7 +57,6 @@ class MasterChannelConfig(Structure):
                 ("rx_buffer_size", c_uint16),
                 ("decode_level", DecodeLevel)]
 
-
 class RuntimeConfig(Structure):
     _fields_ = [("num_core_threads", c_uint16)]
 
@@ -69,6 +68,7 @@ class DatabasePoints(Structure):
                ("frozenCounterValue", c_uint32),
                ("analogValue", c_double),
                ("analogOutputStatusValue", c_double),]
+
 class DatabasePointsPtr(c_void_p):
     pass
     

@@ -1,36 +1,22 @@
-import sys
-import os
-import helics as h 
-import time
 import logging
+import helics as h 
 
-
-
-#device
-from process_level.protection_relays. import ProcessDevice
+from process_level.circuit_breakers import CircuitBreaker
+from process_level.protection_relays import ProtectionRelay
 from process_level.transformers.distribution_transformer import DistributionTransformer
-from process_level.circuit_breakers import CircuitBreaker 
-from bay_level.bay_controllers import BayController 
+from bay_level.bay_controllers import BayController
 
 
-
-# Create a logger instance
+# Config logger for use in all files
+logging.basicConfig(filename="simulation.log", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Add a StreamHandler to send log messages to the console
-logger.addHandler(logging.StreamHandler())
-
-# Set the logger level to DEBUG to capture messages at and above this level
-logger.setLevel(logging.DEBUG)
-
 # Log messages at different levels
-logger.debug("This is a debug message")
-#logger.info("This is an info message")
-#logger.warning("This is a warning message")
-#logger.error("This is an error message")
-#logger.critical("This is a critical message")
-
-
+# logger.debug("This is a debug message")
+# logger.info("This is an info message")
+# logger.warning("This is a warning message")
+# logger.error("This is an error message")
+# logger.critical("This is a critical message")
 
 def create_broker():
     """
@@ -71,8 +57,7 @@ def setup_federate():
     pass
 
 
-def run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_controller,
-                   endpoint_bay_controller, endpoint_main_transformer, endpoint_protection_relay, endpoint_circuit_breaker):
+def run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_controller):
     start_time = 22 * 3600        # 22:00 in seconds
     end_time   = (24 + 4) * 3600  # 04:00 next day in seconds
 
@@ -88,23 +73,23 @@ def run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_cont
 
         # Voltage Monitoring and Control
         elif 22 * 3600 + 30 * 60 <= current_time < 22 * 3600 + 35 * 60:  # 22:30 to 22:35
-            voltage_monitoring_and_control(bay_controller, transformer, endpoint_main_transformer)
+            voltage_monitoring_and_control(bay_controller, transformer)
 
         # Substation Response
         elif 22 * 3600 + 35 * 60 <= current_time < 23 * 3600:  # 22:35 to 23:00
-            substation_response(transformer, endpoint_main_transformer)
+            substation_response(transformer)
 
         # Simulated Fault Injection
         elif current_time == 24 * 3600:  # 00:00 next day
-            simulated_fault_injection(protection_relay, endpoint_protection_relay)
+            simulated_fault_injection(protection_relay)
 
         # Fault Response
         elif current_time == 25 * 3600:  # 01:00 next day
-            fault_response(protection_relay, circuit_breaker, endpoint_circuit_breaker)
+            fault_response(protection_relay, circuit_breaker)
 
         # Fault Recovery
         elif current_time == 26 * 3600 + 1800:  # 01:00 to 02:30 next day
-            fault_recovery(transformer, bay_controller, endpoint_main_transformer)
+            fault_recovery(transformer, bay_controller)
 
         current_time += time_increment
 
@@ -118,51 +103,53 @@ def sudden_load_increase(transformer):
     logger.info("Sudden Load Increase: Voltage dropped due to load increase.")
 
 
-def voltage_monitoring_and_control(bay_controller, transformer, endpoint_main_transformer):
+def voltage_monitoring_and_control(bay_controller, transformer):
     target_voltage = 120.0
     current_voltage = transformer.get_output_voltage()
 
     if current_voltage < target_voltage:
-        adjust_main_transformer_tap_settings(transformer, endpoint_main_transformer)
+        adjust_main_transformer_tap_settings(transformer)
         bay_controller.record_transformer_settings(transformer)
         bay_controller.record_voltage_data(current_voltage)
 
     logger.info("Voltage Monitoring and Control: Bay voltage regulation in progress.")
 
 
-def adjust_main_transformer_tap_settings(transformer, endpoint_main_transformer):
+def adjust_main_transformer_tap_settings(transformer):
     # Implement Modbus communication to adjust tap settings
     pass
 
 
-def substation_response(transformer, endpoint_main_transformer):
+def substation_response(transformer):
     # Implement gradual return to normal voltage using Modbus commands
     pass
 
 
-def simulated_fault_injection(protection_relay, endpoint_protection_relay):
+def simulated_fault_injection(protection_relay):
     protection_relay.trip()
     # Send fault information using DNP3 protocol
 
 
-def fault_response(protection_relay, circuit_breaker, endpoint_circuit_breaker):
+def fault_response(protection_relay, circuit_breaker):
     protection_relay.reset()
     circuit_breaker.open()
     # Send fault response information using DNP3 protocol
 
+def fault_recovery(transformer, bay_controller):
+    # TODO
+    pass
 
-def fault_recovery(transformer, bay_controller, endpoint_main_transformer):
-    if __name__ == "__main__":
-        broker = create_broker()
-        fed, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb = setup_federate()
 
-        transformer      = Transformer(name="MainTransformer", transformer_type="Distribution")
-        protection_relay = ProtectionRelay(name="Relay1", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0)
-        circuit_breaker  = CircuitBreaker(name="CB1", max_current=200.0)
-        bay_controller   = BayController(name="Bay1")
+if __name__ == "__main__":
+    master_dnp3_address = 1
 
-        bay_controller.add_device(transformer)
-        bay_controller.add_device(protection_relay)
-        bay_controller.add_device(circuit_breaker)
+    broker = create_broker()
+    # TODO: setup federate
+    # fed, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb = setup_federate()
 
-    run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_controller, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb)
+    transformer = DistributionTransformer(name="MainTransformer", capacity=100.0)
+    circuit_breaker = CircuitBreaker("CB1", 1024, master_dnp3_address, "127.0.0.1:20000", max_current=200.0)
+    bay_controller = BayController("Bay1", 1025, master_dnp3_address, "127.0.0.1:20001")
+    protection_relay = ProtectionRelay("Relay1", 1026, master_dnp3_address, "127.0.0.1:20002", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0)
+
+    run_simulation(None, transformer, protection_relay, circuit_breaker, bay_controller)
