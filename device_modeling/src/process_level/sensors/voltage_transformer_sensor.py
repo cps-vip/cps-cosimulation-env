@@ -1,4 +1,4 @@
-from src.process_level.sensors import Sensor
+from .sensor_device import Sensor
 
 class VoltageTransformerSensor(Sensor):
     def __init__(self, name: str, ratio: float):

@@ -1,4 +1,4 @@
-from transformer_device import Transformer
+from .transformer_device import Transformer
 
 class CurrentTransformer(Transformer):
     pass

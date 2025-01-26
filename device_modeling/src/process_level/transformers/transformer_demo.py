@@ -1,5 +1,4 @@
-
-from transformer_device import Transformer  
+from .transformer_device import Transformer  
 
 # Instantiate a Transformer
 transformer = Transformer(name="Transformer1", transformer_type="Distribution Transformer")

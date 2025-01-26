@@ -6,7 +6,7 @@ from ctypes import CDLL, c_char_p, c_uint16, c_int
 from dnp3.config_classes import DatabasePointsPtr, OutstationConfig, ServerPtr, AddressFilterPtr, OutstationPtr, RuntimePtr
 from device_base.device import Device, DeviceState
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # Have to supply absolute path if the shared library isn't in /usr/lib
 liboutpath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/liboutstation.so'))
@@ -15,7 +15,6 @@ libout = CDLL(liboutpath)
 libtcppath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/libtcpserver.so'))
 libtcp = CDLL(libtcppath)
 
-# TODO: Change raise Exception() to something more useful everywhere it appears
 
 class DNP3Outstation(Device):
     # Since it's impractical to have a TCP server with multiple outstations,
@@ -60,7 +59,6 @@ class DNP3Outstation(Device):
     def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str):
         # Make sure to initialize the Device base class
         super().__init__(name)
-        log.info("Testing 123")
 
         self._outstation_addr = outstation_addr
         self._master_addr = master_addr

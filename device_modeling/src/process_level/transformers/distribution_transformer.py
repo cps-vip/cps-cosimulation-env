@@ -1,4 +1,4 @@
-from transformer_device import Transformer
+from .transformer_device import Transformer
 
 class DistributionTransformer(Transformer):
     def __init__(self, name: str, capacity: float):

@@ -1,14 +1,14 @@
 import logging
 import helics as h 
 
+from bay_level.bay_controllers import BayController
 from process_level.circuit_breakers import CircuitBreaker
 from process_level.protection_relays import ProtectionRelay
 from process_level.transformers.distribution_transformer import DistributionTransformer
-from bay_level.bay_controllers import BayController
 
 
 # Config logger for use in all files
-logging.basicConfig(filename="simulation.log", level=logging.INFO)
+logging.basicConfig(filename="simulation.log", level=logging.INFO, filemode="w+")
 logger = logging.getLogger(__name__)
 
 # Log messages at different levels
@@ -99,6 +99,7 @@ def run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_cont
 def sudden_load_increase(transformer):
     load_increase = 0.2
     new_primary_voltage = transformer.get_primary_voltage() * (1 - load_increase)
+    logger.info(f"{new_primary_voltage=}")
     transformer.set_primary_voltage(new_primary_voltage)
     logger.info("Sudden Load Increase: Voltage dropped due to load increase.")
 
@@ -147,9 +148,12 @@ if __name__ == "__main__":
     # TODO: setup federate
     # fed, endpoint_bc, endpoint_mt, endpoint_pr, endpoint_cb = setup_federate()
 
-    transformer = DistributionTransformer(name="MainTransformer", capacity=100.0)
+    transformer = DistributionTransformer(name="MainTransformer", capacity=2000.0)
+    transformer.set_primary_voltage(3000.0)
+
     circuit_breaker = CircuitBreaker("CB1", 1024, master_dnp3_address, "127.0.0.1:20000", max_current=200.0)
-    bay_controller = BayController("Bay1", 1025, master_dnp3_address, "127.0.0.1:20001")
+    circuit_breaker.activate()
+    bay_controller = BayController("Controller 1", 1025, master_dnp3_address, "127.0.0.1:20001", "Bay 1")
     protection_relay = ProtectionRelay("Relay1", 1026, master_dnp3_address, "127.0.0.1:20002", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0)
 
     run_simulation(None, transformer, protection_relay, circuit_breaker, bay_controller)

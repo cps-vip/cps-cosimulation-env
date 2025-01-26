@@ -1,9 +1,8 @@
 import os
 from ctypes import CDLL, c_char_p, c_uint16
-from station_level.station_device import StationDevice
-from dnp3.config_classes import RuntimePtr, MasterChannelPtr, MasterChannelConfig
+from .station_device import StationDevice
 from device_base.device import DeviceState
-from time import sleep
+from dnp3.config_classes import RuntimePtr, MasterChannelPtr, MasterChannelConfig
 
 libmasterpath = os.path.abspath(os.path.join(os.path.dirname(__file__), r'../../build/libmaster.so'))
 libmaster = CDLL(libmasterpath)

@@ -1,10 +1,14 @@
-from bay_level.bay_device import BayDevice
-from dnp3.dnp3_outstation import DNP3Outstation
 import random
+import logging
 import matplotlib.pyplot as plt
 
-class BayController(DNP3Outstation):
-    def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str):
+from .bay_device import BayDevice
+
+logger = logging.getLogger(__name__)
+
+
+class BayController(BayDevice):
+    def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str, bay_name: str):
         """
         Constructor for the BayController class.
         
@@ -14,12 +18,11 @@ class BayController(DNP3Outstation):
         Args:
             name (str): The name of the bay controller.
         """
-        super().__init__(name, outstation_addr, master_addr, socket_addr)
+        super().__init__(name, outstation_addr, master_addr, socket_addr, bay_name)
         self.devices = []          # List to store BayDevice objects
         self.target_voltage = 0.0  # The desired target voltage for the bay
         self.voltage_margin = 5.0  # A margin for acceptable voltage variation
         self.voltage_history = []  # Store voltage history for visualization
-
 
     def add_device(self, device: BayDevice):
         """
@@ -29,7 +32,6 @@ class BayController(DNP3Outstation):
             device (BayDevice): The BayDevice object to add.
         """
         self.devices.append(device)
-
 
     def remove_device(self, device: BayDevice):
         """
@@ -41,7 +43,6 @@ class BayController(DNP3Outstation):
         if device in self.devices:
             self.devices.remove(device)
 
-
     def get_device_names(self) -> list:
         """
         Method to get the names of all devices in the bay.
@@ -50,7 +51,6 @@ class BayController(DNP3Outstation):
             list: A list of device names.
         """
         return [device.get_device_name() for device in self.devices]
-
 
     def get_bay_status(self) -> str:
         """
@@ -64,7 +64,6 @@ class BayController(DNP3Outstation):
                 return "Active"
         return "Inactive"
 
-
     def set_target_voltage(self, voltage: float):
         """
         Method to set the desired target voltage for the bay.
@@ -73,7 +72,6 @@ class BayController(DNP3Outstation):
             voltage (float): The target voltage.
         """
         self.target_voltage = voltage
-
 
     def regulate_voltage(self):
         """
@@ -93,12 +91,11 @@ class BayController(DNP3Outstation):
                         # Voltage is too high, reduce it
                         reduction_amount = min(voltage_difference, self.voltage_margin)
                         new_voltage = current_voltage - reduction_amount
-                        print(f"Reducing voltage for {device.get_device_name()} by {reduction_amount} V.")
+                        logger.info(f"Reducing voltage for {device.get_device_name()} by {reduction_amount} V.")
                     else:
                         # Voltage is too low, increase it
                         increase_amount = min(-voltage_difference, self.voltage_margin)
                         new_voltage = current_voltage + increase_amount
-                        print(f"Increasing voltage for {device.get_device_name()} by {increase_amount} V.")
 
                     # Set the target voltage of the device to maintain it
                     #device.target_voltage = new_voltage
@@ -106,8 +103,7 @@ class BayController(DNP3Outstation):
                     self.voltage_history.append(new_voltage)
 
                 else:
-                    print(f"{device.get_device_name()} voltage within acceptable range.")
-
+                    logger.info(f"{device.get_device_name()} voltage within acceptable range.")
 
     def measure_voltage(self, device: BayDevice) -> float:
         """
@@ -125,7 +121,6 @@ class BayController(DNP3Outstation):
         voltage = random.uniform(voltage_min, voltage_max)
         return voltage
 
-
     def send_voltage_regulation_command(self, device: BayDevice, target_voltage: float, current_voltage: float):
         """
         Method to send a voltage regulation command to an IEC61850 device and adjust the voltage to keep it within an acceptable range.
@@ -142,20 +137,19 @@ class BayController(DNP3Outstation):
                 # Voltage is too high, reduce it
                 reduction_amount = min(voltage_difference, self.voltage_margin)
                 new_voltage = current_voltage - reduction_amount
-                print(f"Reducing voltage for {device.get_device_name()} by {reduction_amount} V.")
+                logger.info(f"Reducing voltage for {device.name} by {reduction_amount} V.")
             else:
                 # Voltage is too low, increase it
                 increase_amount = min(-voltage_difference, self.voltage_margin)
                 new_voltage = current_voltage + increase_amount
-                print(f"Increasing voltage for {device.get_device_name()} by {increase_amount} V.")
+                logger.info(f"Increasing voltage for {device.name} by {increase_amount} V.")
         
             # Set the target voltage of the device to maintain it
             device.target_voltage = new_voltage
             self.voltage_history[-1] = new_voltage  # Update the last recorded voltage with the adjusted voltage
 
         else:
-            print(f"{device.get_device_name()} voltage within acceptable range.")
-
+            logger.info(f"{device.name} voltage within acceptable range.")
 
     def visualize_voltage_history(self, start_time, end_time):
         """

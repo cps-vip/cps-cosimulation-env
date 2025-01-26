@@ -1,4 +1,4 @@
-from src.process_level.process_device import ProcessDevice
+from ..process_device import ProcessDevice
 
 class Sensor(ProcessDevice):
     def __init__(self, name: str, sensor_type: str):

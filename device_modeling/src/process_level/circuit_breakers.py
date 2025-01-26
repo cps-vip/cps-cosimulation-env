@@ -1,8 +1,11 @@
-from process_level.process_device import ProcessDevice
+import logging
+
+from .process_device import ProcessDevice
+
+logger = logging.getLogger(__name__)
 
 
 class CircuitBreaker(ProcessDevice):
-
     def __init__(self, name: str, outstation_addr: int, master_addr: int, socket_addr: str, max_current: float):
         """
         Constructor for the CircuitBreaker class.
@@ -20,7 +23,6 @@ class CircuitBreaker(ProcessDevice):
         self.position  = 0     # 0 for open, 1 for closed
         self.trip_cmd  = False
 
-
     def close(self): 
         """
         Method to close the circuit breaker.
@@ -34,12 +36,11 @@ class CircuitBreaker(ProcessDevice):
                 self.position  = 1
                 self.trip_cmd  = False
                 self.binary_transaction()
-                print(f"{self.name} circuit breaker is now closed.")
+                logger.info(f"{self.name} circuit breaker is now closed.")
             else:
-                print(f"{self.name} circuit breaker is already closed.")
+                logger.warning(f"{self.name} circuit breaker is already closed.")
         except Exception as e:
-            print(f"An error occurred while closing the circuit breaker: {e}")
-
+            logger.error(f"An error occurred while closing the circuit breaker: {e}")
 
     def open(self):
         """
@@ -54,12 +55,11 @@ class CircuitBreaker(ProcessDevice):
                 self.position = 0
                 self.trip_cmd = False
                 self.binary_transaction()
-                print(f"{self.name} circuit breaker is now open.")
+                logger.info(f"{self.name} circuit breaker is now open.")
             else:
-                print(f"{self.name} circuit breaker is already open.")
+                logger.warning(f"{self.name} circuit breaker is already open.")
         except Exception as e:
-            print(f"An error occurred while opening the circuit breaker: {e}")
-
+            logger.error(f"An error occurred while opening the circuit breaker: {e}")
 
     def get_max_current(self) -> float:
         """
@@ -70,7 +70,6 @@ class CircuitBreaker(ProcessDevice):
         """
         return self.max_current
 
-
     def is_closed_status(self) -> bool:
         """
         Method to check whether the circuit breaker is currently closed or not.
@@ -79,7 +78,6 @@ class CircuitBreaker(ProcessDevice):
             bool: True if the circuit breaker is closed, False if it is open.
         """
         return self.is_closed
-
 
     def trip(self):
         """
@@ -91,12 +89,11 @@ class CircuitBreaker(ProcessDevice):
         try:
             if not self.trip_cmd:
                 self.trip_cmd = True
-                print(f"Trip command issued for {self.name} circuit breaker.")
+                logger.info(f"Trip command issued for {self.name} circuit breaker.")
             else:
-                print(f"Trip command has already been issued for {self.name} circuit breaker.")
+                logger.warning(f"Trip command has already been issued for {self.name} circuit breaker.")
         except Exception as e:
-            print(f"An error occurred while issuing the trip command: {e}")
-
+            logger.error(f"An error occurred while issuing the trip command: {e}")
 
     # IEC 61850 specific methods and attributes:
     def get_node_name(self) -> str:
@@ -107,7 +104,6 @@ class CircuitBreaker(ProcessDevice):
             str: The logical node name associated with the circuit breaker.
         """
         return f"CBR:{self.name}"
-
 
     def get_status_data(self) -> dict:
         """
@@ -124,4 +120,4 @@ class CircuitBreaker(ProcessDevice):
                 "Pos": str(self.position)
             }
         except Exception as e:
-            print(f"An error occurred while getting status data: {e}")
+            logger.error(f"An error occurred while getting status data: {e}")

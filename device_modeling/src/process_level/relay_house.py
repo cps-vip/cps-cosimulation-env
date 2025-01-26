@@ -1,8 +1,10 @@
-from process_device import ProcessDevice
-from protection_relays import ProtectionRelay
 import time
 import random
+
 from uuid import uuid4
+from .process_device import ProcessDevice
+from .protection_relays import ProtectionRelay
+
 
 class RelayHouse(ProcessDevice):
     def __init__(self, name: str, relays = {}):
