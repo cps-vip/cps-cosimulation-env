@@ -1,37 +1,45 @@
-from scipy.io import loadmat
-import torch
-from torch_geometric.data import Data
 import numpy as np
-from oct2py import Oct2Py
+from torch_geometric.data import Data
 from matpower import Matpower
+import torch
 
-def preprocess_matpower_case(case_name):
-    with Matpower(engine='octave') as m:  # run as context manager
-        mpc = m.eval(case_name, verbose=False)
-        mpc = m.runpf(mpc)
-    # Extract bus and branch information
-    bus = mpc.bus
-    branch = mpc.branch
+def perturb_case_loads(case, load_scale_range=(0.5, 1.5)):
+    """
+    Modifies Pd and Qd values in a MATPOWER case to simulate varying loads.
+    """
+    new_case = case.copy()
+    Pd = new_case['bus'][:, 2]  # Pd column
+    Qd = new_case['bus'][:, 3]  # Qd column
 
-    # Extract number of buses
-    num_buses = bus.shape[0]
+    # Apply random scaling factors
+    scale = np.random.uniform(*load_scale_range, size=Pd.shape)
+    new_case['bus'][:, 2] = Pd * scale
+    new_case['bus'][:, 3] = Qd * scale
 
-    # Extract node features (e.g., voltage magnitude)
-    voltage_magnitudes = torch.tensor(bus[:, 7], dtype=torch.float32).view(-1, 1)  # Column 7 = VM
+    return new_case
 
-    # Build edge_index for PyTorch Geometric (bidirectional edges)
-    from_bus = branch[:, 0].astype(int) - 1  # Convert 1-based to 0-based
-    to_bus = branch[:, 1].astype(int) - 1
-    edge_index = torch.tensor(
-        np.array([np.concatenate([from_bus, to_bus]),
-                  np.concatenate([to_bus, from_bus])]),
-        dtype=torch.long
-    )
+def generate_dataset(case_name='case9', num_samples=500):
+    dataset = []
 
-    # Return a PyTorch Geometric Data object
-    return voltage_magnitudes, edge_index
+    for _ in range(num_samples):
+        with Matpower(engine='octave') as m:  # run as context manager
+            mpc = m.eval(case_name, verbose=False)
+            mpc = m.runpf(mpc)
+            perturbed = perturb_case_loads(mpc)
+            solved = m.runpf(perturbed)
 
+        x = torch.tensor(perturbed['bus'][:, 7], dtype=torch.float32).unsqueeze(1)
+        y = torch.tensor(solved['bus'][:, 7], dtype=torch.float32).unsqueeze(1)
 
-if (__name__ == '__main__'):
-    preprocess_matpower_case('case9')
-    # preprocess_matpower_case("case10ba.m")
+        from_bus = solved['branch'][:, 0].astype(int) - 1
+        to_bus = solved['branch'][:, 1].astype(int) - 1
+        edge_index = torch.tensor(
+            np.array([np.concatenate([from_bus, to_bus]),
+                      np.concatenate([to_bus, from_bus])]),
+            dtype=torch.long
+        )
+
+        data = Data(x=x, edge_index=edge_index, y=y)
+        dataset.append(data)
+
+    return dataset
