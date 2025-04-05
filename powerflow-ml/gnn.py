@@ -1,6 +1,7 @@
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
+from preprocessing import preprocess_matpower_case
 
 # Define a Graph Convolutional Network layer
 class PowerFlowGCN(torch.nn.Module):
@@ -16,29 +17,11 @@ class PowerFlowGCN(torch.nn.Module):
         return x
 
 if (__name__ == "__main__"):
-    # Define a simple electrical grid as a graph
-    # In this example, let's consider a small grid with 4 nodes (buses) and 4 edges (power lines)
-    edge_index = torch.tensor([[0, 1, 1, 2, 2, 3, 3, 0], [1, 0, 2, 1, 3, 2, 0, 3]], dtype=torch.long)
-    num_nodes = 4
+    # --- Step 1: Preprocess IEEE case9 ---
+    x, edge_index = preprocess_matpower_case('case9')
 
-    # Define initial node features (voltage magnitudes)
-    initial_voltage = torch.tensor([1.0, 1.0, 1.0, 1.0], dtype=torch.float).view(-1, 1)
-    x = initial_voltage.clone()
+    # --- Step 2: Run through the GCN ---
+    model = PowerFlowGCN()
+    output = model(x, edge_index)
 
-    # Instantiate the GCN model
-    gcn_model = PowerFlowGCN()
-
-    # Set the number of iterations for solving power flow equations
-    num_iterations = 10
-
-    # Simulate power flow iterations
-    for _ in range(num_iterations):
-        # Forward pass through the GCN model
-        x = gcn_model(x, edge_index)
-        
-        # Clamp voltage magnitudes to ensure they remain positive
-        x = F.relu(x)
-
-    # Display the final voltage magnitudes
-    print("Final Voltage Magnitudes:")
-    print(x)
+    print("GCN output:\n", output)
