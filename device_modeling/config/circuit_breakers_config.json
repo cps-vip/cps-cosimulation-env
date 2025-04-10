@@ -1,0 +1,26 @@
+{
+    "coreInit": "--federates=1",
+    "coreName": "Circuit Breaker Federate",
+    "coreType": "zmq",
+    "name": "CircuitBreakerSim",
+    "offset": 0,
+    "period": 60,
+    "timeDelta": 1,
+    "logfile": "output.log",
+    "log_level": "warning",
+    "uninterruptible": true,
+    "publications": [
+        {
+        "key": "CircuitBreakerSim/cb_output_voltage",
+        "type": "complex",
+        "global": true
+         }
+    ],
+    "subscriptions": [
+        {
+        "key": "TransmissionSim/transmission_voltage",
+        "type": "complex",
+        "global": true
+         }
+    ]
+}
