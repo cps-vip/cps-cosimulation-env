@@ -295,7 +295,7 @@ class JSONEditor(tk.Toplevel):
         main_frame.pack()
 
         tk.Label(main_frame, text="Are you sure you want to delete this?").pack(side=tk.TOP)
-        tk.Button(main_frame, text="Yes", command= lambda: set_confirm(confirm_win, True))).pack(side=tk.LEFT)
+        tk.Button(main_frame, text="Yes", command= lambda: set_confirm(confirm_win, True)).pack(side=tk.LEFT)
         tk.Button(main_frame, text="No", command= lambda: set_confirm(confirm_win, False)).pack(side=tk.RIGHT)
         
         self.grab_set()
