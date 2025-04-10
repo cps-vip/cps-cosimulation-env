@@ -24,7 +24,7 @@ def generate_dataset(case_name='case9', num_samples=500):
     for _ in range(num_samples):
         with Matpower(engine='octave') as m:  # run as context manager
             mpc = m.eval(case_name, verbose=False)
-            mpc = m.runpf(mpc)
+            mpc = m.rundcpf(mpc)
             perturbed = perturb_case_loads(mpc)
             solved = m.runpf(perturbed)
 

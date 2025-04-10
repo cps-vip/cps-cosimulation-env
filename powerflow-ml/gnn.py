@@ -1,7 +1,6 @@
 import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
-from preprocessing import preprocess_matpower_case
 
 # Define a Graph Convolutional Network layer
 class PowerFlowGCN(torch.nn.Module):
