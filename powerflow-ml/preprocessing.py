@@ -3,6 +3,7 @@ from torch_geometric.data import Data
 from matpower import Matpower
 import multiprocessing
 import torch
+import tqdm
 
 def perturb_case_loads(case, load_scale_range=(0.5, 1.5)):
     """
@@ -22,9 +23,9 @@ def perturb_case_loads(case, load_scale_range=(0.5, 1.5)):
 def get_datapoint(case_name, dataset, i):
     with Matpower(engine='octave') as m:  # run as context manager
         mpc = m.eval(case_name, verbose=False)
-        mpc = m.rundcpf(mpc)
+        mpc = m.rundcpf(mpc, verbose=False)
         perturbed = perturb_case_loads(mpc)
-        solved = m.runpf(perturbed)
+        solved = m.runpf(perturbed, verbose=False)
     
     x = torch.tensor(perturbed['bus'][:, 7], dtype=torch.float32).unsqueeze(1)
     y = torch.tensor(solved['bus'][:, 7], dtype=torch.float32).unsqueeze(1)
@@ -39,6 +40,7 @@ def get_datapoint(case_name, dataset, i):
     
     data = Data(x=x, edge_index=edge_index, y=y)
     dataset[i] = data
+    #print(f'Completed datapoint {i}')
     return data
 
 
@@ -46,14 +48,28 @@ def generate_dataset(case_name='case9', num_samples=500):
     with multiprocessing.Manager() as manager:
         dataset = manager.list([0] * num_samples)
         procs = []
+        arg_list = [0] * num_samples
+        for i in range(num_samples):
+            arg_list[i] = (case_name, dataset, i)
+        with multiprocessing.Pool(20) as pool:
+            #pool.starmap(get_datapoint, arg_list)
+            results = tqdm.tqdm(pool.imap(get_datapoint_imap, arg_list), total=num_samples)
+            for result in results:
+                pass
+        '''
         for i in range(num_samples):
             p = multiprocessing.Process(target=get_datapoint, args=(case_name, dataset, i))
             procs.append(p)
             p.start()
         for p in procs:
             p.join()
+        '''
         results = list(dataset)
 
     return results
+
+def get_datapoint_imap(input_args):
+    (case_name, dataset, i) = input_args
+    return get_datapoint(case_name, dataset, i)
 
 
