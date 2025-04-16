@@ -8,7 +8,8 @@ import time, pickle
 
 if (__name__ == '__main__'):
     run_timestamp = time.strftime("%Y%m%d-%H%M%S")
-    full_dataset = generate_dataset('case9', num_samples=500)
+    num_samples = 5000
+    full_dataset = generate_dataset('case9', num_samples=num_samples)
 
     # Split into train/val
     train_len = int(0.8 * len(full_dataset))
@@ -52,11 +53,11 @@ if (__name__ == '__main__'):
         dataset = pickle.load(load_file)
     '''
     
-    with open(f'train_dataset_{run_timestamp}.pkl', 'wb') as dump_file:
+    with open(f'train_dataset_n{num_samples}_{run_timestamp}.pkl', 'wb') as dump_file:
         pickle.dump(full_dataset, dump_file)
    
-    eval_dataset = generate_dataset('case9', num_samples=500)
-    with open(f'eval_dataset_{run_timestamp}.pkl', 'wb') as dump_file:
+    eval_dataset = generate_dataset('case9', num_samples=num_samples)
+    with open(f'eval_dataset_n{num_samples}_{run_timestamp}.pkl', 'wb') as dump_file:
         pickle.dump(eval_dataset, dump_file)
   
-    torch.save(model, f'./saved_model_{run_timestamp}.model')
+    torch.save(model, f'./saved_model_n{num_samples}_{run_timestamp}.model')

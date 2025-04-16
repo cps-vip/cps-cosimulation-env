@@ -40,36 +40,31 @@ def get_datapoint(case_name, dataset, i):
     
     data = Data(x=x, edge_index=edge_index, y=y)
     dataset[i] = data
-    #print(f'Completed datapoint {i}')
     return data
-
 
 def generate_dataset(case_name='case9', num_samples=500):
     with multiprocessing.Manager() as manager:
+        # Construct shared data object
         dataset = manager.list([0] * num_samples)
-        procs = []
+
+        # Format arguments for allocation to worker pool        
         arg_list = [0] * num_samples
         for i in range(num_samples):
             arg_list[i] = (case_name, dataset, i)
+
+        # Construct worker pool and allocate datapoint generation
         with multiprocessing.Pool(20) as pool:
-            #pool.starmap(get_datapoint, arg_list)
             results = tqdm.tqdm(pool.imap(get_datapoint_imap, arg_list), total=num_samples)
+
+            # imap is lazily evaluated, explicitly pull results
             for result in results:
                 pass
-        '''
-        for i in range(num_samples):
-            p = multiprocessing.Process(target=get_datapoint, args=(case_name, dataset, i))
-            procs.append(p)
-            p.start()
-        for p in procs:
-            p.join()
-        '''
+        
         results = list(dataset)
 
     return results
 
+# Simple wrapper to arrange input methods for multiprocessing.pool.imap() calls
 def get_datapoint_imap(input_args):
     (case_name, dataset, i) = input_args
     return get_datapoint(case_name, dataset, i)
-
-
