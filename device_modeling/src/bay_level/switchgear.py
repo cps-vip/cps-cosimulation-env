@@ -11,7 +11,7 @@ class switchGear():
     
     def turn_on(self):
         if self.status == "OFF" and self.is_tripped == False:
-            self.status == "ON"
+            self.status = "ON"
             print(self.name + " is now turned on.")
         elif self.status == "ON" and self.is_tripped == False:
             print(self.name + " is already on.")
@@ -23,7 +23,7 @@ class switchGear():
 
     def turn_off(self):
         if self.status == "ON" and self.is_tripped == False:
-            self.status == "OFF"
+            self.status = "OFF"
             print(self.name + " is now turned off.")
         elif self.status == "OFF" and self.is_tripped == False:
             print(self.name + " is already off.")

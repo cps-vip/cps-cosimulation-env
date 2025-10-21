@@ -1,0 +1,27 @@
+# Python version >=3.14 with free-threading enabled is strictly required! There are some bugs that manifest in lower versions, see https://github.com/cps-vip/cps-cosimulation-env/wiki/Kaden-McCartney's-Notebook#0915---0921
+[project]
+name = "dnp3"
+version = "1.0.0"
+description = "DNP3 Python extension module"
+authors = [
+    { name = "Kaden McCartney", email = "kaden.mccartney@gmail.com" }
+]
+requires-python = ">=3.14"
+
+# Use scikit-build-core for CMake integration
+[build-system]
+requires = ["scikit-build-core"]
+build-backend = "scikit_build_core.build"
+
+# By default, the build directory is temporary, but this means CMake has to redownload the dnp3 library every time. Setting a directory will fix this.
+# build.tool-args gets passed directly to the ninja. -v to show the compile command. This is redundant with compile_commands.json, but still nice to see it in the command line
+[tool.scikit-build]
+build-dir = "build"
+build.tool-args = ["-v"]
+
+# Defines here get passed to CMake directly (as in, "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug"). Since this is the dnp3-example repo, the build type is set to Debug. Note that setting cmake.build-type = "Debug" does the exact same thing, but it's more explicit to use the actual CMake flag.
+# Documentation: https://scikit-build-core.readthedocs.io/en/latest/configuration/index.html#configuring-cmake-arguments-and-defines
+[tool.scikit-build.cmake.define]
+CMAKE_EXPORT_COMPILE_COMMANDS = 1
+CMAKE_BUILD_TYPE = "Debug"
+

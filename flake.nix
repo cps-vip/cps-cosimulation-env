@@ -23,7 +23,7 @@
       in {
         devShells.default = pkgs.mkShell {
 
-          LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib.outPath}/lib";
+          # LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib.outPath}/lib";
 
           shellHook = ''
             source $(realpath ./.)/nix-shell-setup.bash
@@ -37,12 +37,13 @@
             })
             extra-cmake-modules
 
+            # Build dependencies
             boost
             czmq
             ncurses
 
-            poetry
-            python310
+            # Python will be installed through uv
+            uv
           ];
         };
       }

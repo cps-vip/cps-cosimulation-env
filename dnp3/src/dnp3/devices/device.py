@@ -2,7 +2,6 @@ from enum import Enum
 from abc import ABC, abstractmethod
 
 
-# TODO: make a state diagram
 class DeviceState(Enum):
     INITIALIZED = 0
     ACTIVE = 1

@@ -93,8 +93,6 @@ def run_simulation(fed, transformer, protection_relay, circuit_breaker, bay_cont
 
         current_time += time_increment
 
-    logger.info("Co-simulation completed.")
-
 
 def sudden_load_increase(transformer):
     load_increase = 0.2
@@ -154,6 +152,17 @@ if __name__ == "__main__":
     circuit_breaker = CircuitBreaker("CB1", 1024, master_dnp3_address, "127.0.0.1:20000", max_current=200.0)
     circuit_breaker.activate()
     bay_controller = BayController("Controller 1", 1025, master_dnp3_address, "127.0.0.1:20001", "Bay 1")
+    bay_controller.activate()
     protection_relay = ProtectionRelay("Relay1", 1026, master_dnp3_address, "127.0.0.1:20002", relay_type="Overcurrent", current_rating=100.0, voltage_rating=120.0)
+    protection_relay.activate()
 
     run_simulation(None, transformer, protection_relay, circuit_breaker, bay_controller)
+
+    circuit_breaker.deactivate()
+    circuit_breaker.destroy()
+    bay_controller.deactivate()
+    bay_controller.destroy()
+    protection_relay.deactivate()
+    protection_relay.destroy()
+
+    logger.info("Co-simulation completed.")

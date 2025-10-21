@@ -54,7 +54,6 @@ class CircuitBreaker(ProcessDevice):
                 self.is_closed = False
                 self.position = 0
                 self.trip_cmd = False
-                self.binary_transaction()
                 logger.info(f"{self.name} circuit breaker is now open.")
             else:
                 logger.warning(f"{self.name} circuit breaker is already open.")

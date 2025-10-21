@@ -33,6 +33,6 @@ $1-clean-config:
 clean-config:: $1-clean-config
 endef
 
-$(eval $(call create-cmake-targets,helics,HELICS,-DCMAKE_INSTALL_PREFIX=$(REPO_ROOT)/install/HELICS -DHELICS_BUILD_CXX_SHARED_LIB=ON -DHELICS_BUILD_EXAMPLES=ON -DHELICS_BUILD_TESTS=ON))
+$(eval $(call create-cmake-targets,helics,HELICS,-DCMAKE_INSTALL_PREFIX=$(REPO_ROOT)/install/HELICS -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DHELICS_BUILD_CXX_SHARED_LIB=ON -DHELICS_BUILD_EXAMPLES=ON -DHELICS_BUILD_TESTS=ON))
 
-$(eval $(call create-cmake-targets,gridlab,gridlab-d,-DCMAKE_INSTALL_PREFIX=$(REPO_ROOT)/install/gridlab -DCMAKE_BUILD_TYPE=Debug -DGLD_USE_HELICS=ON -DGLD_HELICS_DIR=$(REPO_ROOT)/install/HELICS))
+$(eval $(call create-cmake-targets,gridlab,gridlab-d,-DCMAKE_INSTALL_PREFIX=$(REPO_ROOT)/install/gridlab -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Debug -DGLD_USE_HELICS=ON -DGLD_HELICS_DIR=$(REPO_ROOT)/install/HELICS))

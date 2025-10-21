@@ -1,5 +1,5 @@
-#include "dnp3.h"
-
+#include <Python.h>
+#include <stdatomic.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -7,21 +7,21 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "dnp3.h"
+
+// Forward declarations
+PyObject *DNP3Error;
+#define CAPSULE_NAME_OUTSTATION_CONFIG "dnp3_outstation_config"
+#define CAPSULE_NAME_ADDRESS_FILTER "dnp3_address_filter"
+#define CAPSULE_NAME_OUTSTATION "dnp3_outstation"
+#define CAPSULE_NAME_OUTSTATION_SERVER "dnp3_outstation_server"
+
+
 // TODO: integrate with HELICS time
 dnp3_timestamp_t now() {
     return dnp3_timestamp_synchronized_timestamp((uint64_t)time(NULL));
 }
 
-// TODO: implement proper logging interface
-void on_log_message(dnp3_log_level_t level, const char *msg, void *arg) { printf("%s", msg); }
-
-dnp3_logger_t get_logger() {
-    return (dnp3_logger_t){
-        .on_message = &on_log_message,
-        .on_destroy = NULL,
-        .ctx = NULL,
-    };
-}
 
 // OutstationApplication interface
 uint16_t get_processing_delay_ms(void *context) { return 0; }
@@ -338,10 +338,20 @@ void octet_string_transaction(dnp3_database_t *db, void *context) {
     dnp3_octet_string_value_destroy(octet_string);
 }
 
-// TODO: Change to propert logging
-void on_connection_state_change(dnp3_connection_state_t state, void *ctx) { printf("Connection state change: %s\n", dnp3_connection_state_to_string(state)); }
+void on_connection_state_change(dnp3_connection_state_t state, void *ctx) { 
+    /*char* string;*/
+    /*if (asprintf(&string, "Connection state change: %s\n", dnp3_connection_state_to_string(state)) < 0) {*/
+    /*    on_log_message(DNP3_LOG_LEVEL_ERROR, "Unable to allocate memory for log message", NULL);*/
+    /*    return;*/
+    /*}*/
+    /**/
+    /*on_log_message(DNP3_LOG_LEVEL_INFO, string, NULL);*/
+    /*free(string);*/
+}
 
-void on_port_state_change(dnp3_port_state_t state, void *ctx) { printf("Port state change: %s\n", dnp3_port_state_to_string(state)); }
+void on_port_state_change(dnp3_port_state_t state, void *ctx) {
+    printf("Port state change: %s\n", dnp3_port_state_to_string(state)); 
+}
 
 dnp3_connection_state_listener_t get_connection_state_listener() {
     return (dnp3_connection_state_listener_t){
@@ -467,6 +477,28 @@ dnp3_event_buffer_config_t get_event_buffer_config() {
     );
 }
 
+
+static void address_filter_capsule_destructor(PyObject *capsule) {
+    dnp3_address_filter_t *ptr = PyCapsule_GetPointer(capsule, CAPSULE_NAME_ADDRESS_FILTER);
+    if (ptr) {
+        dnp3_address_filter_destroy(ptr);
+    }
+}
+
+static void outstation_capsule_destructor(PyObject *capsule) {
+    dnp3_outstation_t *ptr = PyCapsule_GetPointer(capsule, CAPSULE_NAME_OUTSTATION);
+    if (ptr) {
+        dnp3_outstation_destroy(ptr);
+    }
+}
+
+static void config_capsule_destructor(PyObject *capsule) {
+    dnp3_outstation_config_t *config = PyCapsule_GetPointer(capsule, CAPSULE_NAME_OUTSTATION_CONFIG);
+    if (config) {
+        free(config);
+    }
+}
+
 dnp3_outstation_config_t create_outstation_config(uint16_t outstation_addr, uint16_t master_addr) {
     // create an outstation configuration with default values
     dnp3_outstation_config_t config = dnp3_outstation_config_init(
@@ -479,6 +511,28 @@ dnp3_outstation_config_t create_outstation_config(uint16_t outstation_addr, uint
     return config;
 }
 
+static PyObject* dnp3_create_outstation_config(PyObject *self, PyObject *args) {
+    unsigned int outstation_addr, master_addr;
+    if (!PyArg_ParseTuple(args, "II", &outstation_addr, &master_addr)) {
+        return NULL;
+    }
+
+    dnp3_outstation_config_t config = create_outstation_config((uint16_t)outstation_addr, (uint16_t)master_addr);
+
+    dnp3_outstation_config_t *config_ptr = malloc(sizeof(dnp3_outstation_config_t));
+    memcpy(config_ptr, &config, sizeof(dnp3_outstation_config_t));
+
+    // Create a capsule to hold the config
+    PyObject *capsule = PyCapsule_New(config_ptr, CAPSULE_NAME_OUTSTATION_CONFIG, NULL);
+
+    const char *name = PyCapsule_GetName(capsule);
+    const char *ptr = PyCapsule_GetPointer(capsule, CAPSULE_NAME_OUTSTATION_CONFIG);
+    if (!capsule) {
+        return PyErr_NoMemory();
+    }
+    return capsule;
+}
+
 void init_database(dnp3_outstation_t *outstation) {
     dnp3_database_transaction_t startup_transaction = {
         .execute = &outstation_transaction_startup,
@@ -488,44 +542,64 @@ void init_database(dnp3_outstation_t *outstation) {
     dnp3_outstation_transaction(outstation, startup_transaction);
 }
 
-void destroy_outstation(dnp3_outstation_t *outstation) {
-    dnp3_outstation_destroy(outstation);
-}
-
-
-dnp3_address_filter_t* create_address_filter(const char *address_filter) {
-    // Complains about directly creating filter_any as static
-    static dnp3_address_filter_t *filter_any;
-    static bool already;
-    if (!already) {
-        filter_any = dnp3_address_filter_any();
-        ++already;
+static PyObject* dnp3_init_database(PyObject *self, PyObject *args) {
+    PyObject *outstation_capsule;
+    if (!PyArg_ParseTuple(args, "O", &outstation_capsule)) {
+        return NULL;
     }
 
+    dnp3_outstation_t *outstation = PyCapsule_GetPointer(outstation_capsule, CAPSULE_NAME_OUTSTATION);
+    if (outstation == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Invalid outstation capsule");
+        return NULL;
+    }
+
+    init_database(outstation);
+    Py_RETURN_NONE;
+}
+
+dnp3_address_filter_t* create_address_filter(const char *address_filter) {
     if (strcmp(address_filter, "any") == 0) {
+        dnp3_address_filter_t *filter_any = dnp3_address_filter_any();
         return filter_any;
     }
 
     dnp3_address_filter_t *filter = NULL;
     dnp3_param_error_t err = dnp3_address_filter_create(address_filter, &filter);
     if (err) {
-        // TODO: Replace with proper logging
-        printf("Invalid address filter. Try \"any\" or a wildcard IP address. Err: %s \n", dnp3_param_error_to_string(err));
+        fprintf(stderr, "Invalid address filter. Try \"any\" or a wildcard IP address. Err: %s \n", dnp3_param_error_to_string(err));
         return NULL;
     }
     return filter;
 }
 
-void destroy_address_filter(dnp3_address_filter_t *filter) {
-    dnp3_address_filter_destroy(filter);
+static PyObject* dnp3_create_address_filter(PyObject *self, PyObject *args) {
+    const char *address_filter_str;
+    if (!PyArg_ParseTuple(args, "s", &address_filter_str)) {
+        return NULL;
+    }
+
+    dnp3_address_filter_t *filter = create_address_filter(address_filter_str);
+    if (filter == NULL) {
+        PyErr_SetString(DNP3Error, "Failed to create address filter. Check console output for details.");
+        return NULL;
+    }
+
+    PyObject *capsule = PyCapsule_New(filter, CAPSULE_NAME_ADDRESS_FILTER, address_filter_capsule_destructor);
+    if (!capsule) {
+        dnp3_address_filter_destroy(filter); // Clean up on capsule creation failure
+        return PyErr_NoMemory();
+    }
+    return capsule;
 }
 
-dnp3_outstation_t* add_outstation(dnp3_outstation_server_t *server, dnp3_address_filter_t *filter, dnp3_outstation_config_t config) {
+dnp3_outstation_t* add_outstation(dnp3_outstation_server_t *server, dnp3_address_filter_t *filter, dnp3_outstation_config_t *config) {
     dnp3_outstation_t *outstation = NULL;
-    
+
+
     dnp3_param_error_t err = dnp3_outstation_server_add_outstation(
         server,
-        config,
+        *config,
         get_outstation_application(),
         get_outstation_information(),
         get_control_handler(),
@@ -535,43 +609,116 @@ dnp3_outstation_t* add_outstation(dnp3_outstation_server_t *server, dnp3_address
     );
 
     if (err) {
-        // TODO: Replace with proper logging
-        printf("unable to add outstation: %s \n", dnp3_param_error_to_string(err));
+        fprintf(stderr, "Error: %s\n", dnp3_param_error_to_string(err));
         return NULL;
     }
     return outstation;
 }
 
-void enable_outstation(dnp3_outstation_t *outstation) {
+static PyObject* dnp3_add_outstation(PyObject *self, PyObject *args) {
+    PyObject *server_capsule, *filter_capsule, *config_capsule;
+    if (!PyArg_ParseTuple(args, "OOO", &server_capsule, &filter_capsule, &config_capsule)) {
+        return NULL;
+    }
+
+    dnp3_outstation_server_t *server = PyCapsule_GetPointer(server_capsule, CAPSULE_NAME_OUTSTATION_SERVER); // Assuming server capsule exists and is passed
+    dnp3_address_filter_t *filter = PyCapsule_GetPointer(filter_capsule, CAPSULE_NAME_ADDRESS_FILTER);
+    dnp3_outstation_config_t *config = PyCapsule_GetPointer(config_capsule, CAPSULE_NAME_OUTSTATION_CONFIG);
+
+    if (server == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Invalid tcp server capsule passed to add_outstation");
+        return NULL;
+    }
+    if (filter == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Invalid filter capsule passed to add_outstation");
+        return NULL;
+    }
+    if (config == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Invalid config capsule passed to add_outstation");
+        return NULL;
+    }
+
+    dnp3_outstation_t *outstation = add_outstation(server, filter, config);
+    if (outstation == NULL) {
+        PyErr_SetString(DNP3Error, "Failed to add outstation.");
+        return NULL;
+    }
+
+    PyObject *outstation_capsule_ret = PyCapsule_New(outstation, CAPSULE_NAME_OUTSTATION, outstation_capsule_destructor);
+    if (!outstation_capsule_ret) {
+        dnp3_outstation_destroy(outstation); // Cleanup if capsule creation fails
+        return PyErr_NoMemory();
+    }
+    return outstation_capsule_ret;
+}
+
+static PyObject* dnp3_enable_outstation(PyObject *self, PyObject *args) {
+    PyObject *outstation_capsule;
+    if (!PyArg_ParseTuple(args, "O", &outstation_capsule)) {
+        return NULL;
+    }
+
+    dnp3_outstation_t *outstation = PyCapsule_GetPointer(outstation_capsule, CAPSULE_NAME_OUTSTATION);
+    if (outstation == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Invalid outstation capsule");
+        return NULL;
+    }
+
     dnp3_outstation_enable(outstation);
+    Py_RETURN_NONE;
 }
 
-void disable_outstation(dnp3_outstation_t *outstation) {
+static PyObject* dnp3_disable_outstation(PyObject *self, PyObject *args) {
+    PyObject *outstation_capsule;
+    if (!PyArg_ParseTuple(args, "O", &outstation_capsule)) {
+        return NULL;
+    }
+
+    dnp3_outstation_t *outstation = PyCapsule_GetPointer(outstation_capsule, CAPSULE_NAME_OUTSTATION);
+    if (outstation == NULL) {
+        PyErr_SetString(PyExc_TypeError, "Invalid outstation capsule");
+        return NULL;
+    }
+
     dnp3_outstation_disable(outstation);
+    Py_RETURN_NONE;
 }
 
-void binary_update(dnp3_outstation_t *outstation, database_points_t *database_points) {
-    dnp3_database_transaction_t transaction = {
-        .execute = &binary_transaction,
-        .on_destroy = NULL,
-        .ctx = database_points,
-    };
-    dnp3_outstation_transaction(outstation, transaction);
-}
 
-database_points_t* create_default_database_points() {
-    database_points_t* database_points = malloc(sizeof(database_points_t));
-    database_points->binaryValue = false;
-    database_points->doubleBitBinaryValue = DNP3_DOUBLE_BIT_DETERMINED_OFF;
-    database_points->binaryOutputStatusValue = false;
-    database_points->counterValue = 0;
-    database_points->frozenCounterValue = 0;
-    database_points->analogValue = 0.0;
-    database_points->analogOutputStatusValue = 0.0;
+// --- Module Definition ---
 
-    return database_points;
-}
+static PyMethodDef methods[] = {
+    {"create_outstation_config",  dnp3_create_outstation_config, METH_VARARGS, "Create an outstation configuration."},
+    {"init_database", dnp3_init_database, METH_VARARGS, "Initialize the outstation database."},
+    {"create_address_filter",  dnp3_create_address_filter, METH_VARARGS, "Create an address filter."},
+    {"add_outstation",  dnp3_add_outstation, METH_VARARGS, "Add an outstation to a server."},
+    {"enable_outstation",  dnp3_enable_outstation, METH_VARARGS, "Enable an outstation."},
+    {"disable_outstation",  dnp3_disable_outstation, METH_VARARGS, "Disable an outstation."},
+    {NULL, NULL, 0, NULL}        /* Sentinel */
+};
 
-void destroy_database_points(database_points_t* database_points) {
-    free(database_points);
+
+static struct PyModuleDef outstation_module = {
+    PyModuleDef_HEAD_INIT,
+    "dnp3_extensions",
+    "DNP3 Outstation Extension Module",
+    -1,
+    methods
+};
+
+
+PyMODINIT_FUNC PyInit_outstation(void)
+{
+    PyObject *m = PyModule_Create(&outstation_module);
+    if (m == NULL)
+        return NULL;
+
+    DNP3Error = PyErr_NewException("dnp3_extensions.DNP3Error", PyExc_RuntimeError, NULL);
+    Py_XINCREF(DNP3Error);
+    if (PyModule_AddObject(m, "DNP3Error", DNP3Error) < 0) {
+        Py_XDECREF(DNP3Error);
+        return NULL;
+    }
+
+    return m;
 }

@@ -1,6 +1,6 @@
 [submodule "HELICS"]
 	path = HELICS
-	url = https://github.com/cps-vip/HELICS.git
+	url = https://github.com/GMLC-TDC/HELICS.git
 [submodule "gridlab-d"]
 	path = gridlab-d
-	url = https://github.com/cps-vip/gridlab-d.git
+	url = https://github.com/gridlab-d/gridlab-d.git
