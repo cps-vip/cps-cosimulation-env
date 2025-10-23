@@ -21,7 +21,7 @@ def perturb_case_loads(case, load_scale_range=(0.5, 1.5)):
     return new_case
 
 def get_datapoint(case_name, dataset, i):
-    with Matpower(engine='octave') as m:  # run as context manager
+    with Matpower(engine='matlab') as m:  # run as context manager
         mpc = m.eval(case_name, verbose=False)
         mpc = m.rundcpf(mpc, verbose=False)
         perturbed = perturb_case_loads(mpc)
