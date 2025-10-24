@@ -1,7 +1,6 @@
 #include <Python.h>
 #include <inttypes.h>
 #include <stddef.h>
-#include <syscall.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>

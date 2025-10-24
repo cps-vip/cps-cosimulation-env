@@ -15,6 +15,7 @@ build-backend = "scikit_build_core.build"
 
 # build.tool-args gets passed directly to the ninja. -v to show the compile command. This is redundant with compile_commands.json, but still nice to see it in the command line
 [tool.scikit-build]
+build-dir = "build"
 build.tool-args = ["-v"]
 
 # Defines here get passed to CMake directly (as in, "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE=Debug"). Since this is the dnp3-example repo, the build type is set to Debug. Note that setting cmake.build-type = "Debug" does the exact same thing, but it's more explicit to use the actual CMake flag.

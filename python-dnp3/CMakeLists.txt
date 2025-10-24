@@ -7,21 +7,19 @@ find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 # Determine the architecture
 if(WIN32 AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
     set(DNP3_RUST_TARGET "x86_64-pc-windows-msvc")
+elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    # This check isn't the most precise, hard to test potential fixes without having a Mac
+    set(DNP3_RUST_TARGET "aarch64-apple-darwin")
 elseif(UNIX AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64")
     set(DNP3_RUST_TARGET "x86_64-unknown-linux-gnu")
 elseif(UNIX AND CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     set(DNP3_RUST_TARGET "aarch64-unknown-linux-gnu")
-elseif(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64")
-    set(DNP3_RUST_TARGET "x86_64-apple-darwin")
-elseif(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-    set(DNP3_RUST_TARGET "aarch64-apple-darwin")
 else()
     message(FATAL_ERROR "Target architecture not supported")
 endif()
 
-# Find the CMake package
+# Find the Rust DNP3 library's CMake package if it exists
 if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/../install/dnp3/cmake)
-    # Use the locally built library
     message("Found DNP3 package")
     find_package(dnp3 REQUIRED HINTS ${CMAKE_CURRENT_LIST_DIR}/../install/dnp3/cmake)
 else()
