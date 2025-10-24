@@ -1,5 +1,5 @@
 {
-  description = "HELICS";
+  description = "cps-cosimulation-env";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
@@ -23,7 +23,7 @@
       in {
         devShells.default = pkgs.mkShell {
 
-          # LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib.outPath}/lib";
+          LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib.outPath}/lib";
 
           shellHook = ''
             source $(realpath ./.)/nix-shell-setup.bash
@@ -36,6 +36,10 @@
               uiToolkits = [ "ncurses" ];
             })
             extra-cmake-modules
+
+            # Rust toolchain
+            rustc
+            cargo
 
             # Build dependencies
             boost

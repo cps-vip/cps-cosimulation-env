@@ -103,7 +103,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dnp3", directory = "dnp3" },
+    { name = "dnp3", directory = "python-dnp3" },
     { name = "helics", specifier = ">=3.4.0" },
     { name = "matplotlib", specifier = ">=3.8.0" },
     { name = "pypower", specifier = ">=5.1.16" },
@@ -122,7 +122,7 @@ wheels = [
 [[package]]
 name = "dnp3"
 version = "1.0.0"
-source = { directory = "dnp3" }
+source = { directory = "python-dnp3" }
 
 [[package]]
 name = "fonttools"

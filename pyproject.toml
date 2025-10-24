@@ -19,5 +19,5 @@ dependencies = [
 # Specifying the path here means it will automatically get built
 # and installed when uv is looking for the dnp3 dependency
 [tool.uv.sources]
-dnp3 = { path = "./dnp3", editable = false }
+dnp3 = { path = "./python-dnp3", editable = false }
 

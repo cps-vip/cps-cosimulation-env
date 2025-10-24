@@ -1,6 +1,9 @@
 [submodule "HELICS"]
-	path = HELICS
+	path = external/HELICS
 	url = https://github.com/GMLC-TDC/HELICS.git
 [submodule "gridlab-d"]
-	path = gridlab-d
+	path = external/gridlab-d
 	url = https://github.com/gridlab-d/gridlab-d.git
+[submodule "external/dnp3"]
+	path = external/dnp3
+	url = https://github.com/stepfunc/dnp3.git
