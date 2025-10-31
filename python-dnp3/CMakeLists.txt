@@ -12,11 +12,16 @@ elseif(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" AND CMAKE_SYSTEM_NAME MA
 elseif(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64" AND CMAKE_SYSTEM_NAME MATCHES "Darwin")
     set(DNP3_RUST_TARGET "x86_64-apple-darwin")
 elseif(UNIX AND CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|amd64|AMD64")
-    set(DNP3_RUST_TARGET "x86_64-linux-gnu")
+    set(DNP3_RUST_TARGET "x86_64-unknown-linux-gnu")
 elseif(UNIX AND CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
     set(DNP3_RUST_TARGET "aarch64-unknown-linux-gnu")
 else()
-    message(FATAL_ERROR "Target architecture not supported")
+    message(FATAL_ERROR
+        "Target architecture not supported.
+        WIN32: ${WIN32}; APPPLE: ${APPLE}; UNIX: ${UNIX}
+        CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}
+        CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}"
+    )
 endif()
 
 # Find the Rust DNP3 library's CMake package if it exists
