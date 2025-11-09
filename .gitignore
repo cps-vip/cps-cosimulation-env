@@ -5,6 +5,7 @@ HELICS/build
 **/CMakeCache.txt
 */results
 /results
+compile_commands.json
 
 **/.DS_Store
 **/.idea
