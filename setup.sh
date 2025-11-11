@@ -13,7 +13,7 @@ echo "Installing Python 3.14t with uv..."
 uv python install --install-dir .python python3.14t
 
 echo "Creating Python 3.14t virtual environment..."
-uv venv --python .python/* .venv
+uv venv --python cpython-3.14.0+freethreaded-linux-x86_64-gnu .venv
 source .venv/bin/activate
 
 echo "Installing Python dependencies from pyproject.toml..."

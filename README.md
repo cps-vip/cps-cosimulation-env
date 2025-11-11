@@ -14,7 +14,7 @@ To verify that Docker is working properly, run `docker info` from the command li
 2. Go into the repo: `cd cps-cosimulation-env`
 3. Switch to the Networking_team branch: `git switch Networking_team`
 4. Update the Git submodules: `git submodule update --init --recursive`
-5. Build the Docker image: `docker build -t cps-cosimulation-env:latest .`
+5. Build the Docker image: `docker build --platform=linux/amd64 -t cps-cosimulation-env:latest .`
 6. Run the Docker container: `docker run -it --rm --name cps-vip --platform linux/amd64 -v .:/home/vip/cps-cosimulation-env cps-cosimulation-env:latest /bin/bash`
 7. Run the one-time setup script: `./setup.sh`. Warning - this will take a long time.
 
