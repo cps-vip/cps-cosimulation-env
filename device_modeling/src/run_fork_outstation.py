@@ -30,22 +30,23 @@ if __name__ == '__main__':
        outstation1.activate()
 
 
-       print('Input "b" to update the binary input and "q" to quit and "a" for the double bit binary transaction and "3" for binary_output_status_transaction2 and "4" for counter_transaction2 and "5" for frozen_counter_transaction2 and "6" for analog_transaction2 and "7" for analog_output_status_transaction2 and "octet" for octet_string_transaction2')
+    #    print('Input "b" to update the binary input and "q" to quit and "a" for the double bit binary transaction and "3" for binary_output_status_transaction2 and "4" for counter_transaction2 and "5" for frozen_counter_transaction2 and "6" for analog_transaction2 and "7" for analog_output_status_transaction2 and "octet" for octet_string_transaction2')
+       print('Update database values by typing binary_input, double_bit_binary, binary_output_status, counter, frozen_counter, analog, analog_output_status, and octet. Type q to quit')
        while True:
            x = input()
-           if (x == 'b'):
+           if (x == 'binary_input'):
                outstation1.binary2_input_transaction()
-           elif (x == 'a'):
+           elif (x == 'double_bit_binary'):
                outstation1.double_bit_binary_transaction2()
-           elif (x == '3'):
+           elif (x == 'binary_output_status'):
                outstation1.binary_output_status_transaction2()
-           elif (x == '4'):
+           elif (x == 'counter'):
                outstation1.counter_transaction2()
-           elif (x == '5'):
+           elif (x == 'frozen_counter'):
                outstation1.frozen_counter_transaction2()
-           elif (x == '6'):
+           elif (x == 'analog'):
                outstation1.analog_transaction2()
-           elif (x == '7'):
+           elif (x == 'analog_output_status'):
                val = float(input("Enter analog output status value: "))
                outstation1.analog_output_status_transaction2(val)
 
