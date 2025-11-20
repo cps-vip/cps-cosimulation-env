@@ -72,6 +72,10 @@ if __name__ == "__main__":
         sub_key = h.helicsInputGetTarget(subid["m{}".format(i)])
         logger.info("{}: Registered Subscription ---> {}".format(federate_name, sub_key))
 
+    ######################   Register Fault Dispatch Publication  ##########################################################
+    pub_fault = h.helicsFederateRegisterGlobalPublication(fed, "Relay_Sim/fault_dispatch", "string", "")
+    logger.info("{}: Registered Fault Dispatch Publication".format(federate_name))
+
     ######################   Entering Execution Mode  ##########################################################
     h.helicsFederateEnterInitializingMode(fed)
     status = h.helicsFederateEnterExecutingMode(fed)
@@ -101,6 +105,10 @@ if __name__ == "__main__":
             name = h.helicsInputGetTarget(sub) 
             current = h.helicsInputGetComplex(sub)
             logger.info("{}: Substation {} to Distribution System = {} A".format(federate_name, name, current))
+            #threshold for current 500 amps
+            if abs(current) > 500.0:
+                logger.warning(f"OVERCURRENT ({abs(current):.1f}A) on {name}. Sending robot")
+                h.helicsPublicationPublishString(pub_fault, "Transformer_A")
         # print(voltage_plot,real_demand)
 
     ##########################   Creating headers and Printing results to CSVs #####################################
