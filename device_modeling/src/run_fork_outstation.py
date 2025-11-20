@@ -5,8 +5,8 @@ import logging
 from time import sleep
 # from devices.outstation import Outstation
 # from devices.master import Master
-from devices.outstation import Outstation
-from devices.master import Master
+from dnp3.devices.outstation import Outstation
+from dnp3.devices.master import Master
 
 
 logging.basicConfig(filename="simulation.log", level=logging.INFO, filemode="w+")

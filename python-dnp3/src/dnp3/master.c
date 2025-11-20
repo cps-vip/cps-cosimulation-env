@@ -205,27 +205,26 @@ void handle_analog_output_status(dnp3_header_info_t info, dnp3_analog_output_sta
     // printf("Variation: %s \n", dnp3_variation_to_string(info.variation));
 
     dnp3_analog_output_status_t *value = NULL;
-    // while ((value = dnp3_analog_output_status_iterator_next(it))) {
-    //     printf("AOS %u: Value=%f Flags=0x%02X Time=%" PRIu64 "\n", value->index, value->value, value->flags.value, value->time.value);
-    // }
+    while ((value = dnp3_analog_output_status_iterator_next(it))) {
+        printf("AOS %u: Value=%f\n", value->index, value->value);
+    }
 }
 
 void handle_octet_strings(dnp3_header_info_t info, dnp3_octet_string_iterator_t *it, void *arg)
 {
-    // printf("Octet Strings:\n");
+    printf("Octet Strings:\n");
     // printf("Qualifier: %s \n", dnp3_qualifier_code_to_string(info.qualifier));
     // printf("Variation: %s \n", dnp3_variation_to_string(info.variation));
 
     dnp3_octet_string_t *value = NULL;
     while ((value = dnp3_octet_string_iterator_next(it))) {
-        // printf("Octet String: %u: Value=", value->index);
+        printf("Octet String: %u: Value=", value->index);
         uint8_t *byte = dnp3_byte_iterator_next(value->value);
         while (byte != NULL) {
-            // printf("%02X", *byte);
+            printf("%s", byte);
             byte = dnp3_byte_iterator_next(value->value);
         }
-
-        // printf("\n");
+        printf("\n");
     }
 }
 
