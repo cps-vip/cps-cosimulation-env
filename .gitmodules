@@ -7,3 +7,6 @@
 [submodule "external/dnp3"]
 	path = external/dnp3
 	url = https://github.com/stepfunc/dnp3.git
+[submodule "HELICS"]
+	path = HELICS
+	url = git@github.com:cps-vip/HELICS.git
