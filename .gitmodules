@@ -10,3 +10,6 @@
 [submodule "HELICS"]
 	path = HELICS
 	url = git@github.com:cps-vip/HELICS.git
+[submodule "gridlab-d"]
+	path = gridlab-d
+	url = git@github.com:cps-vip/gridlab-d.git
