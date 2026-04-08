@@ -12,7 +12,7 @@ To verify that Docker is working properly, run `docker info` from the command li
 ## Installation Steps
 1. Clone this repo: `git clone https://github.com/cps-vip/cps-cosimulation-env.git`
 2. Go into the repo: `cd cps-cosimulation-env`
-3. Switch to the Networking_team branch: `git switch Networking_team`
+3. Switch to the Networking_team branch: `git switch device_modeling_team`
 4. Update the Git submodules: `git submodule update --init --recursive`
 5. Build the Docker image: `docker build --platform=linux/amd64 -t cps-cosimulation-env:latest .`
 6. Run the Docker container: `docker run -it --rm --name cps-vip --platform linux/amd64 -v .:/home/vip/cps-cosimulation-env cps-cosimulation-env:latest /bin/bash`
